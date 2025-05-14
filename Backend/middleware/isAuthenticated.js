@@ -1,3 +1,4 @@
+// middleware works between the request and the response cycle
 import jwt from "jsonwebtoken";
 
 const authenticateToken = (req, res, next) => {
