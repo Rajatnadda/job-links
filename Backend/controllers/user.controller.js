@@ -39,7 +39,7 @@ export const register = async (req, res) => {
     });
   }
 };
-export const Login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
     if (!email || !password || !role) {
@@ -108,7 +108,7 @@ export const Login = async (req, res) => {
   }
 };
 
-export const Logout = async (req, res) => {
+export const logout = async (req, res) => {
   try {
     return res
       .status(200)
