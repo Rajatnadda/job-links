@@ -11,7 +11,7 @@ export const register = async (req, res) => {
         .json({ message: "All fields are required", success: false });
     }
     // check if user already exists
-    const user = await User.findone({ email });
+    const user = await User.findOne({ email });
     if (user) {
       return res
         .status(400)
@@ -28,8 +28,11 @@ export const register = async (req, res) => {
       role,
     });
 
+    await newUser.save();
+
     return res.status(200).json({
       message: `${fullname} registered successfully`,
+      success: true,
     });
   } catch (error) {
     console.error(error);
@@ -128,23 +131,18 @@ export const logout = async (req, res) => {
   }
 };
 
-export const updateProfile = async  (req, res) => {
+export const updateProfile = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, bio, skills } = req.body; 
+    const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.files;
-    if(!fullname || !email || !phoneNumber ||bio || !skills) {
-      return res.status(400).json({
-        message: "All fields are required",
-        success: false,
-      });
+
+    // cloundinary
+    let skillsArray;
+    if(skills){
+       const skillsArray = skills.split(",");
     }
-
-
-  // cloundinary
-
-
     // converting into array format
-    const skillsArray = skills.split(',');
+   
     const userId = req.id; // learn from middleware authentication
     let user = await User.findById(userId);
     if (!user) {
@@ -154,11 +152,23 @@ export const updateProfile = async  (req, res) => {
       });
     }
 
-    user.fullname = fullname;
-    user.email = email; 
-    user.phoneNumber = phoneNumber;
-    user.bio = bio; 
-    user.skills = skillsArray;
+    // update the profile
+    if (fullname) {
+      user.fullname = fullname;
+    }
+    if (email) {
+      user.email = email;
+    }
+    if (phoneNumber) {
+      user.phoneNumber = phoneNumber;
+    }
+    if (bio) {
+      user.profile.bio = bio;
+    }
+    if (skills) {
+      user.profile.skills = skillsArray;
+    }
+
     // resume
     await user.save();
     user = {
@@ -182,4 +192,4 @@ export const updateProfile = async  (req, res) => {
       success: false,
     });
   }
-}
+};
