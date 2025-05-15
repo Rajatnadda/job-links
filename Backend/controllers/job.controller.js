@@ -1,3 +1,5 @@
+import { Job } from "../models/job.model.js";
+
 // users job post
 export const jobPost = async (req, res) => {
   try {
@@ -29,7 +31,7 @@ export const jobPost = async (req, res) => {
         status: false,
       });
     }
-    const job = await createImageBitmap({
+    const job = await job.create({
       title,
       description,
       requirements: requirements.split(","),
@@ -62,13 +64,12 @@ export const getAllJobs = async (req, res) => {
       $or: [
         { title: { $regex: keyword, $options: "i" } },
         { description: { $regex: keyword, $options: "i" } },
-        { location: { $regex: keyword, $options: "i" } },
-        { jobType: { $regex: keyword, $options: "i" } },
-        { requirements: { $regex: keyword, $options: "i" } },
-        { position: { $regex: keyword, $options: "i" } },
       ],
     };
-    const jobs = await Job.find(query);
+    const jobs = await Job.find(query).populate({
+      path: "company"
+    }.sort({ createdAt: -1 }));
+    
     if (!jobs) {
       return res.status(404).json({
         message: "No jobs found",
@@ -116,7 +117,7 @@ export const getJobById = async (req, res) => {
 // for the admin
 
 export const getAdminJobs = async (req, res) => {
-try {
+  try {
     const adminId = req.id;
     const jobs = await Job.find({ created_by: adminId });
     if (!jobs) {
@@ -129,14 +130,12 @@ try {
       message: "Jobs fetched successfully",
       status: true,
       jobs,
-    });  
-
-} catch (error) {
+    });
+  } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: "Internal server error",
       status: false,
     });
   }
-    
-}
+};

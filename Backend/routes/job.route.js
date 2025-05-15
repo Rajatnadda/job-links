@@ -1,10 +1,11 @@
 import express from 'express';
 import authenticateToken from '../middleware/isAuthenticated.js';
+import { getAdminJobs, getAllJobs, getJobById, jobPost } from '../controllers/job.controller.js';
 
 const router = express.Router();
-router.route("/register").post(authenticateToken, registerCompany);
-router.route("/get/").get(authenticateToken, getAllCompany);
-router.route("/get/:id").get(authenticateToken, getCompanyById);
-router.route("/update/:id ").put(authenticateToken, updateCompany);
+router.route("/post").post(authenticateToken, jobPost);
+router.route("/get/").get(authenticateToken, getAllJobs);
+router.route("/getAdminJobs").get(authenticateToken, getAdminJobs);
+router.route("/get/:id ").get(authenticateToken, getJobById);
 
 export default router;
