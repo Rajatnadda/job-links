@@ -1,12 +1,13 @@
-import React from 'react'
-import { Button } from './components/ui/button';
+import Navbar from './components/components_lite/Navbar'
+import './index.css'
 
 function App() {
-  return (
+  
+     return (
     <div>
-      <h1 className='text-center text-sky-900'>Job Links</h1>
+      <Navbar />
     </div>
   )
 }
 
-export default App;
+export default App
