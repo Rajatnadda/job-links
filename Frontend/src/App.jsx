@@ -1,14 +1,12 @@
-
-import './App.css'
+import React from 'react'
+import { Button } from './components/ui/button';
 
 function App() {
-
   return (
-    <>
-      <div className='bg-gray-900 text-white'>
-        dkjkdkjjdkjdkjkdjkjdkjdkkj
-      </div>    </>
+    <div>
+      <Button />
+    </div>
   )
 }
 
-export default App
+export default App;
