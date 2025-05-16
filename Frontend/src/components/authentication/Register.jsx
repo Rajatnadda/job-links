@@ -3,7 +3,10 @@ import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/data";
+import { toast } from "sonner";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -11,9 +14,10 @@ const Register = () => {
     email: "",
     password: "",
     role: "",
-    phoneNuber: "",
+    phoneNumber: "",
     file: "",
   });
+   const Navigate = useNavigate();
   const changeEventHandler = (e) => {
     setInput({
       ...input,
@@ -28,8 +32,33 @@ const Register = () => {
   };
 
   const submitHandler = async (e) => {
-    e.preventDefault();
-    console.log(input);
+    e.preventDefault()
+    const formData = new FormData();
+   formData.append("fullname", input.fullname);
+   formData.append("email", input.email);
+   formData.append("password", input.password);
+   formData.append("role", input.role);
+   formData.append("phoneNumber", input.phoneNumber);
+   if(input.file) {
+   formData.append("file", input.file)}
+
+
+    try {
+      const res =  await axios.post(`${USER_API_ENDPOINT}/register`, formData,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        "withCredentials": true 
+      });
+      if(res.data.success){
+        Navigate("/login")
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+       console.log(error)
+       const errorMessage = error.response ? error.response.data.message : "An unexpected error occured.";
+       toast.error(errorMessage) 
+    }
   };
   return (
     <div>
@@ -67,7 +96,7 @@ const Register = () => {
               onChange={changeEventHandler}
               placeholder="Enter your password...."
             ></Input>
-            <Label>Phone Number</Label>
+            <Label>Phone  Number</Label>
             <Input
               type="tel"
               value={input.phoneNumber}

@@ -3,7 +3,10 @@ import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/data";
+import { toast } from "sonner";
 const Login = () => {
   const [input, setInput] = useState({
     email: "",
@@ -18,8 +21,23 @@ const Login = () => {
   };
 
   const submitHandler = async (e) => {
-    e.preventDefault();
-    console.log(input);
+    e.preventDefault()
+
+    try {
+      const res =  await axios.post(`${USER_API_ENDPOINT}/Login`, input,{
+        headers: {
+          "Content-Type": "application/json",
+        },
+        "withCredentials": true 
+      });
+      if(res.data.success){
+        Navigate("/")
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+       console.log(error)
+       toast.error(error.response.data.message)
+    }
   };
 
   return (
