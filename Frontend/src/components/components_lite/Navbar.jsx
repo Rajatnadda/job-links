@@ -11,7 +11,7 @@ function Navbar() {
     <div className="bg-white">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-bold text-[#6A38C2]">
             Job
             <span className="text-[#d11342]">Links</span>
           </h1>

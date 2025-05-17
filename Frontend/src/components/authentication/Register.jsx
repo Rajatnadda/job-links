@@ -1,126 +1,97 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RadioGroup } from "../ui/radio-group";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
-import { Navigate } from "react-router-dom";
+import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 
-const Register = () => {
+const Login = () => {
   const [input, setInput] = useState({
-    fullname: "",
     email: "",
-    password: "",
+    password: "", 
     role: "",
-    phoneNumber: "",
-    file: "",
   });
-  const Navigate = useNavigate();
-  const Dispatch = useDispatch();
-  const {Loading} = useSelector((store) => store.path)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, user } = useSelector((store) => store.auth);
   const changeEventHandler = (e) => {
-    setInput({
-      ...input,
-      [e.target.name]: e.target.value,
-    });
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
-  const changeFileHandler = (e) => {
-    setInput({
-      ...input,
-      file: e.target.files[0],
-    });
+  const ChangeFilehandler = (e) => {
+    setInput({ ...input, file: e.target.files?.[0] });
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("fullname", input.fullname);
-    formData.append("email", input.email);
-    formData.append("password", input.password);
-    formData.append("role", input.role);
-    formData.append("phoneNumber", input.phoneNumber);
-    if (input.file) {
-      formData.append("file", input.file);
-      
-    }
 
     try {
-      Dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      dispatch(setLoading(true)); // Start loading
+      const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
       if (res.data.success) {
-        Navigate("/login");
+       // dispatch(setUser(res.data.user));
+        navigate("/");
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
-      const errorMessage = error.response
-        ? error.response.data.message
-        : "An unexpected error occured.";
-      toast.error(errorMessage);
-    }finally{
-      Dispatch(setLoading(false));
+      toast.error("Login failed");
+      console.error(error)
+    } finally {
+      dispatch(setLoading(false)); // End loading
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <div>
       <Navbar></Navbar>
-      <div className="flex items-center justify-center  max-w-7xl mx-auto ">
+      <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-b-blue-900 rounded-md p-4 my-10"
+          className="w-1/2 border border-gray-500 rounded-md p-4 my-10"
         >
-          <h1 className="text-3xl font-bold text-center text-amber-500  mb-5">
-            Register
+          <h1 className="font-bold text-xl mb-5 text-center text-blue-600">
+            Login
           </h1>
-          <div className="flex flex-col gap-4">
-            <Label>FullName</Label>
-            <Input
-              type="text"
-              value={input.fullname}
-              name="fullname"
-              onChange={changeEventHandler}
-              placeholder="Enter your name...."
-            ></Input>
+          <div className="my-2">
             <Label>Email</Label>
             <Input
               type="email"
               value={input.email}
               name="email"
               onChange={changeEventHandler}
-              placeholder="Enter your email...."
+              placeholder="johndoe@gmail.com"
             ></Input>
+          </div>
+          <div className="my-2">
             <Label>Password</Label>
             <Input
               type="password"
               value={input.password}
               name="password"
               onChange={changeEventHandler}
-              placeholder="Enter your password...."
-            ></Input>
-            <Label>Phone Number</Label>
-            <Input
-              type="tel"
-              value={input.phoneNumber}
-              name="phoneNumber"
-              onChange={changeEventHandler}
-              placeholder="Enter your phone number...."
+              placeholder="********"
             ></Input>
           </div>
-          {/* //Radio button for checking student or recuriter */}
+           
+
           <div className="flex items-center justify-between">
-            <RadioGroup className="flex items-center gap-5 my-4">
+            <RadioGroup className="flex items-center gap-4 my-5 ">
               <div className="flex items-center space-x-2">
-                <input
+                <Input
                   type="radio"
                   name="role"
                   value="Student"
@@ -131,7 +102,7 @@ const Register = () => {
                 <Label htmlFor="r1">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <input
+                <Input
                   type="radio"
                   name="role"
                   value="Recruiter"
@@ -143,47 +114,36 @@ const Register = () => {
               </div>
             </RadioGroup>
           </div>
-          <div className="flex items-center gap-2">
-            <Label>Profile Photo</Label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={changeFileHandler}
-              className="cursor-pointer"
-            />
-          </div>
-          {Loading ? (
-            <div className="flex items-center justify-center my-10 ">
+
+          {loading ? (
+            <div className="flex items-center justify-center my-10">
               <div className="spinner-border text-blue-600" role="status">
                 <span className="sr-only">Loading...</span>
               </div>
             </div>
           ) : (
             <button
-            type="submit"
-            className="block w-full py-3 my-3 text-black bg-cyan-700 hover:bg-amber-400 rounded-4xl cursor-pointer"
-          >
-            Register
-          </button>
+              type="submit"
+              className="w-3/4 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md"
+            >
+              Login
+            </button>
           )}
 
-          <button
-            type="submit"
-            className="block w-full py-3 my-3 text-black bg-cyan-700 hover:bg-amber-400 rounded-4xl cursor-pointer"
-          >
-            Register
-          </button>
-          {/* already have an account then login0 */}
-          <p className="text-gray-500 text-md my-2 items-center text-center">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-500 font-semibold">
-              Login
-            </Link>
-          </p>
+          <div className=" ">
+            <p className="text-gray-700  text-center my-2">
+              Create new Account{" "}
+              <Link to="/register" className="text-blue-700">
+                <button className=" w-1/2 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-green-600 hover:bg-green-800/90 rounded-md">
+                  Register
+                </button>
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
     </div>
   );
 };
 
-export default Register;
+export default Login;
