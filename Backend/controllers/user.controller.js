@@ -5,11 +5,9 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
-    if (!fullname || !email || !phoneNumber || !password || !role) {
-      return res
-        .status(400)
-        .json({ message: "All fields are required", success: false });
-    }
+if (!fullname || !email || !phoneNumber || !password || !role) {
+  return res.status(400).json({ message: "All fields are required", success: false });
+}
     // check if user already exists
     const user = await User.findOne({ email });
     if (user) {
@@ -138,11 +136,11 @@ export const updateProfile = async (req, res) => {
 
     // cloundinary
     let skillsArray;
-    if(skills){
-       const skillsArray = skills.split(",");
+    if (skills) {
+      const skillsArray = skills.split(",");
     }
     // converting into array format
-   
+
     const userId = req.id; // learn from middleware authentication
     let user = await User.findById(userId);
     if (!user) {
@@ -162,6 +160,13 @@ export const updateProfile = async (req, res) => {
     if (phoneNumber) {
       user.phoneNumber = phoneNumber;
     }
+if(pancard) {
+  user.pancard = pancard;
+}
+if(password) {
+  user.password = password;
+}
+
     if (bio) {
       user.profile.bio = bio;
     }

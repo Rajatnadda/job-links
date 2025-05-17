@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/data";
+import { USER_API_ENDPOINT } from "@/utils/./data.js";
 import { toast } from "sonner";
 const Login = () => {
   const [input, setInput] = useState({
@@ -24,9 +24,9 @@ const Login = () => {
     e.preventDefault()
 
     try {
-      const res =  await axios.post(`${USER_API_ENDPOINT}/Login`, input,{
+      const res =  await axios.post(`${USER_API_ENDPOINT}/login`, input,{
         headers: {
-          "Content-Type": "application/json",
+          "Contnent-Type": "application/json",
         },
         "withCredentials": true 
       });
@@ -35,9 +35,10 @@ const Login = () => {
         toast.success(res.data.message)
       }
     } catch (error) {
-       console.log(error)
-       toast.error(error.response.data.message)
-    }
+          console.log(error)
+        const errorMessage = error.response ? error.response.data.message : "An unexpected error occured."
+        toast.error(errorMessage)
+       }
   };
 
   return (

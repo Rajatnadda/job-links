@@ -15,20 +15,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    pancard: {
+      type: String,
+      required: false,
+      unique: undefined,
+    },
     password: {
       type: String,
       required: true,
     },
-    pancard: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    adharcard: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+   
     role: {
       type: String,
       enum: ["Student", "Recruiter"],

@@ -5,8 +5,9 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/data";
+import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
+import { Navigate } from "react-router-dom";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -17,7 +18,7 @@ const Register = () => {
     phoneNumber: "",
     file: "",
   });
-   const Navigate = useNavigate();
+  const Navigate = useNavigate();
   const changeEventHandler = (e) => {
     setInput({
       ...input,
@@ -32,32 +33,35 @@ const Register = () => {
   };
 
   const submitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const formData = new FormData();
-   formData.append("fullname", input.fullname);
-   formData.append("email", input.email);
-   formData.append("password", input.password);
-   formData.append("role", input.role);
-   formData.append("phoneNumber", input.phoneNumber);
-   if(input.file) {
-   formData.append("file", input.file)}
-
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    formData.append("phoneNumber", input.phoneNumber);
+    if (input.file) {
+      formData.append("file", input.file);
+      
+    }
 
     try {
-      const res =  await axios.post(`${USER_API_ENDPOINT}/register`, formData,{
+      const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        "withCredentials": true 
+        withCredentials: true,
       });
-      if(res.data.success){
-        Navigate("/login")
-        toast.success(res.data.message)
+      if (res.data.success) {
+        Navigate("/login");
+        toast.success(res.data.message);
       }
     } catch (error) {
-       console.log(error)
-       const errorMessage = error.response ? error.response.data.message : "An unexpected error occured.";
-       toast.error(errorMessage) 
+      console.log(error);
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "An unexpected error occured.";
+      toast.error(errorMessage);
     }
   };
   return (
@@ -96,7 +100,7 @@ const Register = () => {
               onChange={changeEventHandler}
               placeholder="Enter your password...."
             ></Input>
-            <Label>Phone  Number</Label>
+            <Label>Phone Number</Label>
             <Input
               type="tel"
               value={input.phoneNumber}
@@ -141,6 +145,7 @@ const Register = () => {
               className="cursor-pointer"
             />
           </div>
+
           <button
             type="submit"
             className="block w-full py-3 my-3 text-black bg-cyan-700 hover:bg-amber-400 rounded-4xl cursor-pointer"
