@@ -3,16 +3,23 @@ import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/./data.js";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
+
 const Login = () => {
   const [input, setInput] = useState({
     email: "",
     password: "",
     role: "",
   });
+  const Navigate = useNavigate();
+  const Dispatch = useDispatch();
+  const { Loading } = useSelector((store) => store.auth);
+
   const changeEventHandler = (e) => {
     setInput({
       ...input,
@@ -21,24 +28,29 @@ const Login = () => {
   };
 
   const submitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const res =  await axios.post(`${USER_API_ENDPOINT}/login`, input,{
+      Dispatch(setLoading(true));
+      const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: {
           "Contnent-Type": "application/json",
         },
-        "withCredentials": true 
+        withCredentials: true,
       });
-      if(res.data.success){
-        Navigate("/")
-        toast.success(res.data.message)
+      if (res.data.success) {
+        Navigate("/");
+        toast.success(res.data.message);
       }
     } catch (error) {
-          console.log(error)
-        const errorMessage = error.response ? error.response.data.message : "An unexpected error occured."
-        toast.error(errorMessage)
-       }
+      console.log(error);
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "An unexpected error occured.";
+      toast.error(errorMessage);
+    } finally {
+      Dispatch(setLoading(false));
+    }
   };
 
   return (
@@ -97,10 +109,18 @@ const Login = () => {
               </div>
             </RadioGroup>
           </div>
+          {Loading ? (
+            <div className="flex items-center justify-center my-10 ">
+              <div className="spinner-border text-blue-600" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button className="block w-3/4 ml-18  py-3 my-3 text-black bg-blue-600 hover:bg-blue-400/90 rounded-4xl cursor-pointer">
+              Login                         
+            </button>
+          )}
 
-          <button className="block w-3/4 ml-18  py-3 my-3 text-black bg-blue-600 hover:bg-blue-400/90 rounded-4xl cursor-pointer">
-            Login
-          </button>
           {/* don't have an account */}
           <p className="text-gray-500 text-md my-2  text-center">
             Create new account?{" "}

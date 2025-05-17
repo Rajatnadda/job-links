@@ -8,6 +8,8 @@ import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
 import { Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -19,6 +21,8 @@ const Register = () => {
     file: "",
   });
   const Navigate = useNavigate();
+  const Dispatch = useDispatch();
+  const {Loading} = useSelector((store) => store.path)
   const changeEventHandler = (e) => {
     setInput({
       ...input,
@@ -46,6 +50,7 @@ const Register = () => {
     }
 
     try {
+      Dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -62,6 +67,8 @@ const Register = () => {
         ? error.response.data.message
         : "An unexpected error occured.";
       toast.error(errorMessage);
+    }finally{
+      Dispatch(setLoading(false));
     }
   };
   return (
@@ -145,6 +152,20 @@ const Register = () => {
               className="cursor-pointer"
             />
           </div>
+          {Loading ? (
+            <div className="flex items-center justify-center my-10 ">
+              <div className="spinner-border text-blue-600" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button
+            type="submit"
+            className="block w-full py-3 my-3 text-black bg-cyan-700 hover:bg-amber-400 rounded-4xl cursor-pointer"
+          >
+            Register
+          </button>
+          )}
 
           <button
             type="submit"
