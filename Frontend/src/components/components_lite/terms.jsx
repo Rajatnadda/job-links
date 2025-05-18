@@ -54,9 +54,9 @@ const Terms = () => {
       <h2>10. Contact Us</h2>
       <p>If you have any questions about these Terms, please contact us:</p>
       <ul>
-        <li>By email: [yourcontactemail@example.com]</li>
-        <li>By visiting this page on our website: [Link to your contact page]</li>
-        <li>By phone number: [Your Phone Number]</li>
+        <li>By email: [Rajateranadda@gmail.com]</li>
+        <li>By visiting this page on our website: [JobLinks.com]</li>
+        <li>By phone number: [+91 8988142044]</li>
       </ul>
 
       <style jsx>{`

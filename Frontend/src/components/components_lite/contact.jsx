@@ -163,39 +163,27 @@ const Contact = () => {
         <div style={{ flex: 1, minWidth: "300px", marginTop: "30px" }}>
           <h2>Our Contact Information</h2>
           <p>
-            <strong>[Your Company Name / Job Portal Name]</strong>
+            <strong>[Rajat Nadda]</strong>
           </p>
           <p>
             <strong>Email:</strong>{" "}
-            <a href="mailto:[yourcontactemail@example.com]">
-              [yourcontactemail@example.com]
+            <a href="Rajateranadda@gmail.com">
+              [Rjt.345@gmail.com]
             </a>
           </p>
           <p>
-            <strong>Phone:</strong> [Your Phone Number] (e.g., +1 234 567 8900)
+            <strong>Phone:</strong> [+91 8219652044]
           </p>
           <p>
             <strong>Address:</strong>
             <br />
-            [Your Street Address]
+            [Bilaspur]
             <br />
-            [Your City, State, Zip Code]
+            [Jhandutta, Himachal Pradesh, 174034]
             <br />
-            [Your Country]
+            [India]
           </p>
-          {/* You can add a map embed here if you like */}
-          {/* 
-          <h3>Our Location</h3>
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d..." 
-            width="100%" 
-            height="300" 
-            style={{ border:0 }} 
-            allowFullScreen="" 
-            loading="lazy" 
-            referrerPolicy="no-referrer-when-downgrade">
-          </iframe>
-          */}
+          
         </div>
       </div>
 
