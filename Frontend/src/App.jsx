@@ -2,11 +2,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/authentication/Login";
 import Register from "./components/authentication/Register";
 import Home from "./components/components_lite/Home";
-import Navbar from "./components/components_lite/Navbar";
 import Contact from "./components/components_lite/contact";
 import About from "./components/components_lite/about";
 import Terms from "./components/components_lite/terms";
 import Privacy from "./components/components_lite/Privacy";
+import Jobs from "./components/components_lite/Jobs";
+import Browse from "./components/components_lite/Browse";
 
 
 const appRouter = createBrowserRouter([
@@ -31,6 +32,14 @@ const appRouter = createBrowserRouter([
               {
                 path: "/Contact",
                 element: <Contact />},
+                {
+                  path: "/Jobs",
+                  element: <Jobs />
+                },
+                {
+                  path: "Browse",
+                  element: <Browse />
+                }
         
 
 ])

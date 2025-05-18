@@ -18,17 +18,34 @@ function Navbar() {
         </div>
         <div className="flex items-center gap-11">
           <ul className="flex font-medium items-center gap-6">
-            <li className="text-[#c60deb]">Home</li>
-            <li className="text-[#a3cb10]">Browse</li>
-            <li className="text-[#d68e19] ">Jobs </li>
+            <li>
+              {""}
+              <Link to={"/"} className="text-[#c60deb]">
+                Home
+              </Link>
+            </li>
+            <li>
+              {""}
+              <Link to={"/Browse"} className="text-[#a3cb10]">
+                Browse
+              </Link>
+            </li>
+            <li>
+              {""}
+              <Link to={"/Jobs"} className="text-[#d68e19] ">
+                Jobs{" "}
+              </Link>
+            </li>
           </ul>
           {!user ? (
             <div className="flex items-center gap-4">
-              <Link to="/Login"> {""}
+              <Link to="/Login">
+                {" "}
+                {""}
                 <Button className="bg-cyan-700 hover:bg-cyan-400">Login</Button>
               </Link>
               <Link to="/Register">
-              {""}
+                {""}
                 <Button className="bg-red-500 hover:bg-amber-400 cursor-pointer">
                   Register
                 </Button>
