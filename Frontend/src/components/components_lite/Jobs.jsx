@@ -20,15 +20,15 @@ const Jobs = () => {
           ) : (
             <div className="flex-1 h-[88vh] overflow-y-auto pb-5">
               <div className="grid grid-cols-3 gap-4">
-              {jobsArray.map((job, index) => (
-                <Job1 key={index} />
-              ))}
-            </div>
+                {jobsArray.map((job, index) => (
+                  <Job1 key={index} />
+                ))}
+              </div>
             </div>
           )}
-        </div>
+        </div> 
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };
