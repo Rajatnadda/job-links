@@ -7,8 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/./data.js";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -16,6 +17,7 @@ const Login = () => {
     password: "",
     role: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const Navigate = useNavigate();
   const Dispatch = useDispatch();
   const { Loading } = useSelector((store) => store.auth);
@@ -27,6 +29,10 @@ const Login = () => {
     });
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -34,11 +40,12 @@ const Login = () => {
       Dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: {
-          "Contnent-Type": "application/json",
+          "Content-Type": "application/json",
         },
         withCredentials: true,
       });
       if (res.data.success) {
+        Dispatch(setUser(res.data.user));
         Navigate("/");
         toast.success(res.data.message);
       }
@@ -73,16 +80,24 @@ const Login = () => {
               onChange={changeEventHandler}
               placeholder="Enter your email...."
             ></Input>
-            <Label>Password</Label>
-            <Input
-              type="password"
-              value={input.password}
-              name="password"
-              onChange={changeEventHandler}
-              placeholder="Enter your password...."
-            ></Input>
+            <div className="relative">
+              <Label>Password</Label>
+              <Input
+                type={showPassword ? "text" : "password"} 
+                value={input.password}
+                name="password"
+                onChange={changeEventHandler}
+                placeholder="Enter your password...."
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-sm leading-5"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
-          {/* //Radio button for checking student or recuriter */}
           <div className="flex items-center justify-between">
             <RadioGroup className="flex items-center gap-5 my-4">
               <div className="flex items-center space-x-2">
@@ -120,11 +135,10 @@ const Login = () => {
               Login                         
             </button>
           )}
-
-          {/* don't have an account */}
+          
           <p className="text-gray-500 text-md my-2  text-center">
             Create new account?{" "}
-            <Link to="/register" className="text-red-500">
+            <Link to="/Register" className="text-red-500">
               Register
             </Link>
           </p>

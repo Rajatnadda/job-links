@@ -2,27 +2,38 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Navigate, useNavigate } from "react-router-dom";
 import { RadioGroup } from "../ui/radio-group";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
-import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 
-const Login = () => {
+const Register = () => {
   const [input, setInput] = useState({
+    fullname: "",
     email: "",
-    password: "", 
+    password: "",
     role: "",
+    phoneNumber: "",
+    file: "",
   });
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, user } = useSelector((store) => store.auth);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
   const ChangeFilehandler = (e) => {
     setInput({ ...input, file: e.target.files?.[0] });
   };
@@ -30,120 +41,179 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    const { fullname, email, password, role, phoneNumber } = input;
+
+    if (!fullname || !email || !password || !role || !phoneNumber) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("fullname", fullname);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("role", role);
+    formData.append("phoneNumber", phoneNumber);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+
     try {
-      dispatch(setLoading(true)); // Start loading
-      const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
-        headers: { "Content-Type": "application/json" },
+      dispatch(setLoading(true));
+      const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
       if (res.data.success) {
-       // dispatch(setUser(res.data.user));
-        navigate("/");
+        navigate("/login");
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error("Login failed");
-      console.error(error)
+      console.log(error);
+      toast.error(
+        error.response?.data?.message || "Something went wrong. Try again."
+      );
     } finally {
-      dispatch(setLoading(false)); // End loading
+      dispatch(setLoading(false));
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, []);
-
   return (
     <div>
-      <Navbar></Navbar>
-      <div className="flex items-center justify-center max-w-7xl mx-auto">
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-gray-500 rounded-md p-4 my-10"
+          className="w-full max-w-xl bg-white p-8 shadow-xl rounded-2xl border"
         >
-          <h1 className="font-bold text-xl mb-5 text-center text-blue-600">
-            Login
-          </h1>
-          <div className="my-2">
-            <Label>Email</Label>
+          <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
+            Create Your Account
+          </h2>
+
+          {/* Full Name */}
+          <div className="mb-4">
+            <Label className="block mb-1">Fullname</Label>
+            <Input
+              type="text"
+              name="fullname"
+              value={input.fullname}
+              onChange={changeEventHandler}
+              placeholder="e.g., John Doe"
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div className="mb-4">
+            <Label className="block mb-1">Email</Label>
             <Input
               type="email"
-              value={input.email}
               name="email"
+              value={input.email}
               onChange={changeEventHandler}
-              placeholder="johndoe@gmail.com"
-            ></Input>
+              placeholder="e.g., user@example.com"
+              required
+            />
           </div>
-          <div className="my-2">
-            <Label>Password</Label>
+
+          {/* Password */}
+          <div className="mb-4">
+            <Label className="block mb-1">Password</Label>
             <Input
               type="password"
-              value={input.password}
               name="password"
+              value={input.password}
               onChange={changeEventHandler}
-              placeholder="********"
-            ></Input>
+              placeholder="Minimum 6 characters"
+              required
+              autoComplete="current-password"
+            />
           </div>
-           
 
-          <div className="flex items-center justify-between">
-            <RadioGroup className="flex items-center gap-4 my-5 ">
+          {/* Phone Number */}
+          <div className="mb-4">
+            <Label className="block mb-1">Phone Number</Label>
+            <Input
+              type="tel"
+              name="phoneNumber"
+              value={input.phoneNumber}
+              onChange={changeEventHandler}
+              placeholder="e.g., +919876543210"
+              required
+            />
+          </div>
+
+          {/* Role */}
+          <div className="mb-4">
+            <Label className="block mb-2">Select Role</Label>
+            <RadioGroup className="flex space-x-6">
               <div className="flex items-center space-x-2">
                 <Input
+                  id="roleStudent"
                   type="radio"
                   name="role"
                   value="Student"
                   checked={input.role === "Student"}
                   onChange={changeEventHandler}
-                  className="cursor-pointer"
+                  required
                 />
-                <Label htmlFor="r1">Student</Label>
+                <Label htmlFor="roleStudent">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
+                  id="roleRecruiter"
                   type="radio"
                   name="role"
                   value="Recruiter"
                   checked={input.role === "Recruiter"}
                   onChange={changeEventHandler}
-                  className="cursor-pointer"
                 />
-                <Label htmlFor="r2">Recruiter</Label>
+                <Label htmlFor="roleRecruiter">Recruiter</Label>
               </div>
             </RadioGroup>
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center my-10">
-              <div className="spinner-border text-blue-600" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          ) : (
-            <button
-              type="submit"
-              className="w-3/4 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md"
-            >
-              Login
-            </button>
-          )}
-
-          <div className=" ">
-            <p className="text-gray-700  text-center my-2">
-              Create new Account{" "}
-              <Link to="/register" className="text-blue-700">
-                <button className=" w-1/2 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-green-600 hover:bg-green-800/90 rounded-md">
-                  Register
-                </button>
-              </Link>
-            </p>
+          {/* Profile Photo */}
+          <div className="mb-4">
+            <Label className="block mb-1">Profile Photo</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={ChangeFilehandler}
+              className="cursor-pointer"
+            />
           </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-md font-medium transition-all duration-200 disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Register"}
+          </button>
+
+          {/* Login Link */}
+          <p className="text-center text-gray-600 mt-4 text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-600 font-semibold underline">
+              Login
+            </Link>
+          </p>
         </form>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

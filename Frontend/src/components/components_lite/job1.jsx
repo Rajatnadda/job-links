@@ -70,8 +70,8 @@ const Job1 = () => {
         </Badge>
       </div>
       <div className="flex items-center gap-4 mt-4">
-        <Button variant="outline" className=" bg-[#FA4F09] font-bold rounded-full cursor-pointer hover:bg-amber-50" >Details</Button>
-        <Button variant="outline" className=" bg-[#6B3Ac2] font-bold rounded-full cursor-pointer hover:bg-amber-50">Save for later.</Button>
+        <Button variant="outline" className=" bg-fuchsia-600 font-bold rounded-full cursor-pointer hover:bg-amber-50" >Details</Button>
+        <Button variant="outline" className=" bg-blue-500 font-bold rounded-full cursor-pointer hover:bg-amber-50">Save for later.</Button>
 
       </div>
     </div>

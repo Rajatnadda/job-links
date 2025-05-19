@@ -4,7 +4,7 @@ import FilterCard from "./FilterCard";
 import Job1 from "./job1.jsx";
 import Footer from "./Footer";
 
-const jobsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const jobsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,];
 
 const Jobs = () => {
   return (
@@ -27,8 +27,10 @@ const Jobs = () => {
             </div>
           )}
         </div> 
+        <div>
+        <Footer /></div>
       </div>
-      <Footer/>
+      
     </div>
   );
 };
