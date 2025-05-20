@@ -8,47 +8,57 @@ import Terms from "./components/components_lite/terms";
 import Privacy from "./components/components_lite/Privacy";
 import Jobs from "./components/components_lite/Jobs";
 import Browse from "./components/components_lite/Browse";
-
+import Profile from "./components/components_lite/Profile";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <Home />},
-    {
-      path: "/Login",
-      element: <Login />},
-      {
-        path: "/Register",
-        element: <Register />},
-        {
-          path: "/Privacy",
-          element: <Privacy />},
-          {
-            path: "/Terms",
-            element: <Terms />},
-            {
-              path: "/About",
-              element: <About />},
-              {
-                path: "/Contact",
-                element: <Contact />},
-                {
-                  path: "/Jobs",
-                  element: <Jobs />
-                },
-                {
-                  path: "Browse",
-                  element: <Browse />
-                }
-        
+    element: <Home />,
+  },
+  {
+    path: "/Login",
+    element: <Login />,
+  },
+  {
+    path: "/Register",
+    element: <Register />,
+  },
+  {
+    path: "/Privacy",
+    element: <Privacy />,
+  },
+  {
+    path: "/Terms",
+    element: <Terms />,
+  },
+  {
+    path: "/About",
+    element: <About />,
+  },
+  {
+    path: "/Contact",
+    element: <Contact />,
+  },
+  {
+    path: "/Jobs",
+    element: <Jobs />,
+  },
+  {
+    path: "Profile",
+    element: <Profile />,
+  },
 
-])
+  {
+    path: "Browse",
+    element: <Browse />,
+  },
+]);
 
-function App(){
+function App() {
   return (
     <div>
       <RouterProvider router={appRouter} />
     </div>
-  )
+  );
 }
 export default App;

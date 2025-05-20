@@ -88,7 +88,7 @@ const  Navbar = () => {
                       variant="link"
                       className="cursor-pointer text-sky-800"
                     >
-                      Profile
+                     <Link to={"/Profile"}> Profile</Link>
                     </Button>
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
