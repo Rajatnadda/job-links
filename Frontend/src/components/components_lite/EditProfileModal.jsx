@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Label } from "../ui/label";
 import {
   Dialog,
@@ -12,13 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
-import { setUser } from "@/redux/authSlice";
+import { setLoading, setUser } from "@/redux/authSlice";
+import { Loader2 } from "lucide-react";
 
 const EditProfileModal = ({ open, setOpen }) => {
   const [loading] = useState(false);
-  const {user} = useSelector((store) => store.auth )
+  const { user } = useSelector((store) => store.auth);
   const [input, setInput] = useState({
-    fullname: user?.fullname ,
+    fullname: user?.fullname,
     email: user?.email,
     phoneNumber: user?.phoneNumber,
     bio: user?.profile?.bio,
@@ -26,47 +27,53 @@ const EditProfileModal = ({ open, setOpen }) => {
     file: user?.profile?.resume,
   });
 
-const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value }); 
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-     formData.append("name", input.fullname);
-     formData.append("email", input.email);
-     formData.append("phone", input.phoneNumber);
-     formData.append("bio", input.bio);
-     formData.append("skills", input.skills);
-     if (input.file) {
-       formData.append("file", input.file);
-     }
-      try {
-        const res = await axios.post(`${USER_API_ENDPOINT}/profile/update`, formData, {
+    formData.append("name", input.fullname);
+    formData.append("email", input.email);
+    formData.append("phone", input.phoneNumber);
+    formData.append("bio", input.bio);
+    formData.append("skills", input.skills);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${USER_API_ENDPOINT}/profile/update`,
+        formData,
+        {
           headers: {
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true,
-
-        })
-        if(res.data.success){
-          dispatch(setUser(res.data.user))
-          toast.success(res.data.message);
         }
-      } catch (error) {
-        console.log(error);
-        toast.error("An unexpected error occured");
+      );
+      if (res.data.success) {
+        dispatch(setUser(res.data.user));
+        toast.success(res.data.message);
       }
-      setOpen(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("An unexpected error occured");
+    } finally {
+      setLoading(false);
+    }
+    setOpen(false);
     console.log(input);
   };
-   
+
   const fileChangeHandler = (e) => {
     const file = e.target.files?.[0];
-    setInput({ ...input, file});
+    setInput({ ...input, file });
   };
 
   return (
@@ -129,7 +136,7 @@ const dispatch = useDispatch();
                 id="bio"
                 value={input.bio}
                 name="bio"
-                  onChange={changeEventHandler}
+                onChange={changeEventHandler}
                 className="col-span-3 border border-gray-300 rounded-md p-2"
               />
             </div>
@@ -139,7 +146,7 @@ const dispatch = useDispatch();
               </Label>
               <input
                 type="text"
-                id="skills" 
+                id="skills"
                 value={input.skills}
                 name="skills"
                 onChange={changeEventHandler}
@@ -161,19 +168,20 @@ const dispatch = useDispatch();
             </div>
           </div>
           <DialogFooter>
-           {loading ? (
-            <div className="flex items-center justify-center my-10 ">
-              <div className="spinner-border text-blue-600" role="status">
-                <span className="sr-only">Loading...</span>
+            {loading ? (
+              <div className="flex items-center justify-center my-10 ">
+                <div className="spinner-border text-blue-600" role="status">
+                  <Button className="ww-full my-4">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> please
+                    Wait..
+                  </Button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <button className="block w-full ml-18  py-3 my-3 text-white bg-black hover:bg-black/70 rounded-4xl cursor-pointer">
-              Save                         
-            </button>
-          )}
-          
-            
+            ) : (
+              <button className="block w-full ml-18  py-3 my-3 text-white bg-black hover:bg-black/70 rounded-4xl cursor-pointer">
+                Save
+              </button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

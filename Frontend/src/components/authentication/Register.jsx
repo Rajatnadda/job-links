@@ -75,7 +75,7 @@ const Register = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        navigate("/login");
+        navigate("/Login");
         toast.success(res.data.message);
       }
     } catch (error) {

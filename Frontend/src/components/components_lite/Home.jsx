@@ -4,8 +4,10 @@ import Categories from './Categories'
 import LatestJobs from './LatestJobs'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import useGetAllJobs from '@/hooks/useGetAllJobs'
 
 const Home = () => {
+  useGetAllJobs();
   return (
     <div>
       <Navbar />

@@ -9,17 +9,17 @@ import AppliedJobs from "./AppliedJobs";
 import EditProfileModal from "./EditProfileModal";
 import { useSelector } from "react-redux";
 
-const skills = [
-  "Javascript",
-  "Python",
-  "React",
-  "Express",
-  "MonogDB",
-  "NodeJs",
-  "HTmL",
-  "Redux",
-  "MySQL",
-];
+// const skills = [
+//   "Javascript",
+//   "Python",
+//   "React",
+//   "Express",
+//   "MonogDB",
+//   "NodeJs",
+//   "HTmL",
+//   "Redux",
+//   "MySQL",
+// ];
 const isResume = true;
 
 const Profile = () => {
@@ -86,11 +86,13 @@ const Profile = () => {
               {isResume ? (
                 <a
                   target="_blank"
-                  href={"http//resume.com"}
+                  href={
+                    user?.profile?.resume 
+                  }
                   download="Resume.pdf"
                   className=" rounded-xl text-blue-600 hover:underline font-bold cursor-pointer"
                 >
-                  Download
+                  Download Resume
                 </a>
               ) : (
                 <span>No Resume Found.</span>

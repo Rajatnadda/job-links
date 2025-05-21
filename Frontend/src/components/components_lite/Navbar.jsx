@@ -3,13 +3,36 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/data";
+import { setUser } from "@/redux/authSlice";
 
 const  Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user } = useSelector((store) =>  store.auth);
-
+ const logoutHandler = async () =>{
+  try {
+     const response = await axios.post(`${USER_API_ENDPOINT}/logout`,{
+      withCredentials:true
+     });
+     if(response.data.success){
+      dispatch(setUser(null));
+      navigate("/");
+      toast.success("Logged out successfully.");
+     
+  }
+  } 
+  
+  catch (error) {
+    console.log(error); 
+    toast.error(error.response.data.message)
+  }
+}
 
 
   return (
@@ -61,7 +84,7 @@ const  Navbar = () => {
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user?.profile?.profilePhoto}
                     alt="@shadcn"
                   />
                 </Avatar>
@@ -70,14 +93,14 @@ const  Navbar = () => {
                 <div className="flex items-center gap-4 space-y-2">
                   <Avatar className="cursor-pointer">
                     <AvatarImage
-                      src="https://github.com/shadcn.png"
+                      src={user?.profile?.profilePhoto}
                       alt="@shadcn"
                     />
                   </Avatar>
                   <div>
-                    <h3 className="text-medium">Rajat Nadda</h3>
+                    <h3 className="text-medium">{user?.fullname}</h3>
                     <p className="text-sm text-muted-foreground">
-                      lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      {user?.profile?.bio}
                     </p>
                   </div>
                 </div>
@@ -93,7 +116,7 @@ const  Navbar = () => {
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut></LogOut>
-                    <Button
+                    <Button onClick={logoutHandler}
                       variant="link"
                       className="cursor-pointer text-red-700"
                     >

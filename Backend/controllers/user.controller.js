@@ -1,6 +1,8 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloud.js";
 
 export const register = async (req, res) => {
   try {
@@ -8,6 +10,12 @@ export const register = async (req, res) => {
 if (!fullname || !email || !phoneNumber || !password || !role) {
   return res.status(400).json({ message: "All fields are required", success: false });
 }
+
+  const file = req.file;
+  const fileUri = getDataUri(file);
+  const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+   
+
     // check if user already exists
     const user = await User.findOne({ email });
     if (user) {
@@ -24,6 +32,9 @@ if (!fullname || !email || !phoneNumber || !password || !role) {
       phoneNumber,
       password: hashedPassword,
       role,
+      profile: {
+        profilePhoto: cloudResponse.secure_url,
+      },
     });
 
     await newUser.save();
@@ -135,10 +146,10 @@ export const updateProfile = async (req, res) => {
     const file = req.files;
 
     // cloundinary
-    let skillsArray;
-    if (skills) {
-      const skillsArray = skills.split(",");
-    }
+    const fileUri = getDataUri(file);
+    const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content);
+
+    
     // converting into array format
 
     const userId = req.id; // learn from middleware authentication
@@ -161,10 +172,6 @@ export const updateProfile = async (req, res) => {
       user.phoneNumber = phoneNumber;
     }
 
-if(password) {
-  user.password = password;
-}
-
     if (bio) {
       user.profile.bio = bio;
     }
@@ -173,6 +180,11 @@ if(password) {
     }
 
     // resume
+
+    if(cloudinaryResponse){
+      user.profile.resume = cloudinaryResponse.secure_url;
+     user.profile.resumeOriginalname = file.originalname
+    }
     await user.save();
     user = {
       _id: user._id,
@@ -188,7 +200,8 @@ if(password) {
       user,
       success: true,
     });
-  } catch (error) {
+  }
+   catch (error) {
     console.error(error);
     res.status(500).json({
       message: "Server Error registering",

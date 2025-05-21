@@ -138,7 +138,7 @@ const Login = () => {
           
           <p className="text-gray-500 text-md my-2  text-center">
             Create new account?{" "}
-            <Link to="/Register" className="text-red-500">
+            <Link to="/register" className="text-red-500">
               Register
             </Link>
           </p>
