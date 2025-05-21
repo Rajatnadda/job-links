@@ -15,12 +15,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: "http://localhost:5174",
+  origin: "http://localhost:5175",
   credentials: true,
 };
 app.use(cors(corsOptions)); 
 
-const PORT = process.env.PORT || 5002; // Or any other port you expect to be free
+const PORT = process.env.PORT || 5173; // Or any other port you expect to be free
 
 // apis
 app.use("/api/users", userRoute);
