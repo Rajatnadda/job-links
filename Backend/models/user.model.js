@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     pancard: {
       type: String,
       required: false,
-      unique: undefined,
+      unique: true, // Reflects the sparse unique index
     },
     password: {
       type: String,

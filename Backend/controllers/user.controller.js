@@ -13,7 +13,7 @@ if (!fullname || !email || !phoneNumber || !password || !role) {
     if (user) {
       return res
         .status(400)
-        .json({ messaage: "User already exists", success: false });
+        .json({ message: "User already exists", success: false });
     }
     // convert password to hash
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,7 +35,7 @@ if (!fullname || !email || !phoneNumber || !password || !role) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      messaage: "Server Error registring",
+      message: "Server Error registering",
       success: false,
     });
   }
@@ -93,7 +93,7 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: strict,
+        sameSite: "strict",
       })
       .json({
         message: `welcome back ${user.fullname}`,
@@ -160,9 +160,7 @@ export const updateProfile = async (req, res) => {
     if (phoneNumber) {
       user.phoneNumber = phoneNumber;
     }
-if(pancard) {
-  user.pancard = pancard;
-}
+
 if(password) {
   user.password = password;
 }
@@ -193,7 +191,7 @@ if(password) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Server Error updating profile",
+      message: "Server Error registering",
       success: false,
     });
   }

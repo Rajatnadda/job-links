@@ -9,6 +9,7 @@ import Privacy from "./components/components_lite/Privacy";
 import Jobs from "./components/components_lite/Jobs";
 import Browse from "./components/components_lite/Browse";
 import Profile from "./components/components_lite/Profile";
+import Description from "./components/components_lite/Description";
 
 const appRouter = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const appRouter = createBrowserRouter([
   {
     path: "/Register",
     element: <Register />,
+  },
+  {
+    path: "/Description/:id",
+    element: <Description/>
   },
   {
     path: "/Privacy",

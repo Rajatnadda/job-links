@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -6,6 +6,7 @@ import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import AppliedJobs from "./AppliedJobs";
+import EditProfileModal from "./EditProfileModal";
 
 const skills = [
   "Javascript",
@@ -18,14 +19,15 @@ const skills = [
   "Redux",
   "MySQL",
 ];
+const isResume = true;
+
 const Profile = () => {
-  const isResume = true;
+  const [open, setOpen] = useState(false);
   return (
     <div className=" min-h-screen">
       <Navbar />
       <div
-        className=" bg-sky-100 max-w-4xl mx-auto  border border-gay-200 rounded-3xl my-5 p-8 shadow
-      shadow-gray-400 hover:shadow-yellow-400 "
+        className="  max-w-4xl mx-auto  border border-gay-200 rounded-3xl my-5 p-8 hover:shadow-yellow-400 "
       >
         <div className="flex justify-between">
           <div className="flex items-center gap-5">
@@ -43,7 +45,11 @@ const Profile = () => {
               </p>
             </div>
           </div>
-          <Button className="text-right cursor-pointer" variant="outline">
+          <Button
+            onClick={() => setOpen(true)}
+            className="text-right cursor-pointer"
+            variant="outline"
+          >
             <Pen />
           </Button>
         </div>
@@ -88,13 +94,14 @@ const Profile = () => {
             </div>
           </div>
         </div>
-            </div>
-       <div className="max-w-4xl mx-auto rounded-2xl">
-          <h1 className="text-lg my-5 font-bold">Applied Jobs</h1>
+      </div>
+      <div className="max-w-4xl mx-auto rounded-2xl">
+        <h1 className="text-lg my-5 font-bold">Applied Jobs</h1>
 
-          {/* Add Application Table */}
-           <AppliedJobs />
-        </div>
+        {/* Add Application Table */}
+        <AppliedJobs />
+      </div>
+      <EditProfileModal open={open} setOpen={setOpen} />
     </div>
   );
 };
