@@ -7,6 +7,7 @@ import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import AppliedJobs from "./AppliedJobs";
 import EditProfileModal from "./EditProfileModal";
+import { useSelector } from "react-redux";
 
 const skills = [
   "Javascript",
@@ -23,12 +24,11 @@ const isResume = true;
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
+  const { user } = useSelector((store) => store.auth);
   return (
     <div className=" min-h-screen">
       <Navbar />
-      <div
-        className="  max-w-4xl mx-auto  border border-gay-200 rounded-3xl my-5 p-8 hover:shadow-yellow-400 "
-      >
+      <div className="  max-w-4xl mx-auto  border border-gay-200 rounded-3xl my-5 p-8 hover:shadow-yellow-400 ">
         <div className="flex justify-between">
           <div className="flex items-center gap-5">
             <Avatar className="cursor-pointer h-24 w-24">
@@ -38,10 +38,10 @@ const Profile = () => {
               />
             </Avatar>
             <div>
-              <h1 className="flex text-xl font-medium">Rajat Nadda</h1>
+              <h1 className="flex text-xl font-medium">{user?.fullname}</h1>
               <p className="">
-                {" "}
-                lorem ipsum dolor sit amet consectetur adipisicing elit.
+                {user?.profile?.bio}
+                
               </p>
             </div>
           </div>
@@ -56,19 +56,23 @@ const Profile = () => {
         <div className="my-5">
           <div className="flex items-center gap-5 my-5">
             <Mail />
-            <span className="">Rajateranadda@gmail.com</span>
+            <span className="">
+            <a href={`mailto:${user?.email}`}> {user?.email}</a>
+            </span>
           </div>
           <div className="flex items-center gap-5 my-5">
             <Contact />
-            <span className="">+91 8988142044</span>
+            <span className="">
+              <a href={`tel:${user?.phoneNumber}`}> {user?.phoneNumber}</a>
+            </span>
           </div>
         </div>
         <div>
           <div className="my-5">
             <h1 className="text-xl font-bold">Skills</h1>
             <div className="flex item-center gap-1">
-              {skills.length !== 0 ? (
-                skills.map((item, index) => <Badge key={index}>{item}</Badge>)
+              {user?.profile?.skills.length !== 0 ? (
+                user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>)
               ) : (
                 <span>NaN</span>
               )}

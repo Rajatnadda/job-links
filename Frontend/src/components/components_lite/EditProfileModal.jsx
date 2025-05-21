@@ -15,12 +15,12 @@ import { toast } from "sonner";
 import { setUser } from "@/redux/authSlice";
 
 const EditProfileModal = ({ open, setOpen }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const {user} = useSelector((store) => store.auth )
   const [input, setInput] = useState({
-    name: user?.name ,
+    fullname: user?.fullname ,
     email: user?.email,
-    phone: user?.phoneNumber,
+    phoneNumber: user?.phoneNumber,
     bio: user?.profile?.bio,
     skills: user?.profile?.skills.map((skills) => skills),
     file: user?.profile?.resume,
@@ -114,7 +114,7 @@ const dispatch = useDispatch();
               <input
                 type="tel"
                 id="phone"
-                value={input.phone}
+                value={input.phoneNumber}
                 name="phone"
                 onChange={changeEventHandler}
                 className="col-span-3 border border-gray-300 rounded-md p-2"
