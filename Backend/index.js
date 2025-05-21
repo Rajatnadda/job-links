@@ -20,7 +20,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions)); 
 
-const PORT = process.env.PORT || 5173; // Or any other port you expect to be free
+const PORT = process.env.PORT || 5002; // Or any other port you expect to be free
 
 // apis
 app.use("/api/users", userRoute);

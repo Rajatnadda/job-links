@@ -10,7 +10,9 @@ import Jobs from "./components/components_lite/Jobs";
 import Browse from "./components/components_lite/Browse";
 import Profile from "./components/components_lite/Profile";
 import Description from "./components/components_lite/Description";
-import Commpanies from "./components/admincomponents/Commpanies";
+import Commpanies from "./components/admincomponents/Companies";
+import CompanyCreate from "./components/admincomponents/CompanyCreate";
+import CompanySetup from "./components/admincomponents/CompanySetup";
 
 const appRouter = createBrowserRouter([
   {
@@ -27,7 +29,7 @@ const appRouter = createBrowserRouter([
   },
   {
     path: "/Description/:id",
-    element: <Description/>
+    element: <Description />
   },
   {
     path: "/Privacy",
@@ -63,6 +65,16 @@ const appRouter = createBrowserRouter([
   {
     path: "/admin/companies",
     element: <Commpanies />
+     
+  },
+  {
+    path: "/admin/companies/create",
+    element: <CompanyCreate />
+     
+  },
+   {
+    path: "/admin/companies/:id",
+    element: <CompanySetup />
      
   }
 ]);
