@@ -9,11 +9,12 @@ import {
   TableRow,
 } from "../ui/table";
 import { Badge } from "../ui/badge";
+import { useSelector } from "react-redux";
 
-const AppliedJobs = () => {
+const AppliedJob = () => {
+  const { allAppliedJobs } = useSelector((store) => store.job);
   return (
     <div>
-      Applied Jobs
       <Table>
         <TableCaption>Recent Applied Jobs</TableCaption>
         <TableHeader>
@@ -25,20 +26,35 @@ const AppliedJobs = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[1, 2, 3, 4, 5].map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>12-12-2012</TableCell>
-              <TableCell>Sotware Engineer</TableCell>
-              <TableCell>Google</TableCell>
-              <TableCell className="text-right">
-                <Badge>Rejected</Badge>{""}
-              </TableCell>
-            </TableRow>
-          ))}
+          {allAppliedJobs.length <= 0 ? (
+            <span>You have not applied any job yet. </span>
+          ) : (
+            allAppliedJobs.map((appliedJob) => (
+              <TableRow key={appliedJob._id}>
+                <TableCell>{appliedJob?.createdAt.split("T")[0]}</TableCell>
+                <TableCell>{appliedJob.job?.title}</TableCell>
+                <TableCell>{appliedJob.job?.company.name}</TableCell>
+                <TableCell className="text-right">
+                  <Badge
+                    className={`${
+                      appliedJob?.status === "rejected"
+                        ? "bg-red-500"
+                        : appliedJob?.status === "accepted"
+                        ? "bg-green-600"
+                        : "bg-gray-500"
+                    }`}
+                  >
+                    {" "}
+                    {appliedJob?.status}
+                  </Badge>{" "}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
   );
 };
 
-export default AppliedJobs;
+export default AppliedJob;

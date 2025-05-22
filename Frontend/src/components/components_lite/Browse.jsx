@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Job1 from "./job1";
 
-const randomJobs = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const randomJobs = [];
 
 const Browse = () => {
   return (

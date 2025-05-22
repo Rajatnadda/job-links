@@ -6,7 +6,7 @@ import { Badge } from "../ui/badge";
 import { Bookmark } from "lucide-react";
 
 const Job1 = ({ job }) => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const daysAgoFunction = (mongodbTime) => {
     const createdAt = new Date(mongodbTime);
@@ -69,4 +69,3 @@ const Job1 = ({ job }) => {
 };
 
 export default Job1;
-

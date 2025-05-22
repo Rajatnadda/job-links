@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-center md:text-left mb-4 md:mb-0">
             <h1 className="text-xl font-bold text-[#6A38C2]">
-              Job<span className="text-[#d11342]">Links</span>
+              <Link to={"/"}>Job</Link><span className="text-[#d11342]"><Link to={"/"}>Links</Link></span>
             </h1>
             <p className="text-sm text-gray-600 mt-1">
               &copy; {new Date().getFullYear()} JobLinks. All rights reserved.

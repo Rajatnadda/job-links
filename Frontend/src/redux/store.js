@@ -2,7 +2,10 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import jobSlice from "./jobSlice";
 import jobReducer from "./jobSlice";
+import companyReducer, { companySlice } from "./CompanySlice";
+
 import {
+  
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -11,33 +14,33 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
-import { companySlice } from "./CompanySlice";
-
+import storage from "redux-persist/lib/storage";
+import applicationSlice from "./applicationSlice";
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
 };
-const rootReducer = combineReducers ({
-    auth: authReducer,
-   job: jobSlice,
-   jobs: jobReducer,
-   company: companySlice
-})
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  job: jobSlice,
+  jobs: jobReducer,
+  company: companySlice,
+  company: companyReducer,
+  application: applicationSlice ,
+});
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-   
-    reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
-  
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
 
-
- });
 export default store;

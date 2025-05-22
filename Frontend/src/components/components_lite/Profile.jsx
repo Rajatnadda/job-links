@@ -4,109 +4,101 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { Label } from "../ui/label";
-import AppliedJobs from "./AppliedJobs";
+import AppliedJob from "./AppliedJobs";
 import EditProfileModal from "./EditProfileModal";
 import { useSelector } from "react-redux";
+import useGetAppliedJobs from "@/hooks/useGetAllAppliedJobs";
 
-// const skills = [
-//   "Javascript",
-//   "Python",
-//   "React",
-//   "Express",
-//   "MonogDB",
-//   "NodeJs",
-//   "HTmL",
-//   "Redux",
-//   "MySQL",
-// ];
+ 
 const isResume = true;
-
 const Profile = () => {
+  useGetAppliedJobs();
   const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
   return (
-    <div className=" min-h-screen">
+    <div>
       <Navbar />
-      <div className="  max-w-4xl mx-auto  border border-gay-200 rounded-3xl my-5 p-8 hover:shadow-yellow-400 ">
+
+      <div className="max-w-4xl mx-auto  bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow shadow-gray-400 hover:shadow-yellow-400">
         <div className="flex justify-between">
           <div className="flex items-center gap-5">
             <Avatar className="cursor-pointer h-24 w-24">
               <AvatarImage
-                src="https://avatars.githubusercontent.com/u/121797925?v=4"
+                src={user?.profile?.profilePhoto}
                 alt="@shadcn"
               />
             </Avatar>
             <div>
-              <h1 className="flex text-xl font-medium">{user?.fullname}</h1>
-              <p className="">
-                {user?.profile?.bio}
-                
-              </p>
+              <h1 className=" font-medium text-xl">{user?.fullname}</h1>
+              <p>{user?.profile?.bio}</p>
             </div>
           </div>
           <Button
             onClick={() => setOpen(true)}
-            className="text-right cursor-pointer"
+            className="text-right"
             variant="outline"
           >
             <Pen />
           </Button>
         </div>
         <div className="my-5">
-          <div className="flex items-center gap-5 my-5">
+          <div className="flex items-center gap-3 my-2">
             <Mail />
             <span className="">
-            <a href={`mailto:${user?.email}`}> {user?.email}</a>
+              <a href={`mailto:${user?.email}`}>{user?.email}</a>
             </span>
           </div>
-          <div className="flex items-center gap-5 my-5">
+          <div className="flex items-center gap-3 my-2">
             <Contact />
             <span className="">
-              <a href={`tel:${user?.phoneNumber}`}> {user?.phoneNumber}</a>
+              <a href={`tel:${user?.phoneNumber}`}>{user?.phoneNumber}</a>
             </span>
           </div>
         </div>
+
         <div>
           <div className="my-5">
-            <h1 className="text-xl font-bold">Skills</h1>
-            <div className="flex item-center gap-1">
+            <h1>Skills</h1>
+            <div className="flex items-center gap-1">
               {user?.profile?.skills.length !== 0 ? (
-                user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>)
+                user?.profile?.skills.map((item, index) => (
+                  <Badge key={index}>{item}</Badge>
+                ))
               ) : (
-                <span>NaN</span>
+                <span>NA</span>
               )}
             </div>
           </div>
         </div>
+
         <div>
-          <div className="grid w-full max-w-sm items-center gap-2">
-            <Label className="text- xl font-bold flex">Upload Resume</Label>
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <label className="text-md font-bold"> Resume</label>
             <div>
               {isResume ? (
                 <a
                   target="_blank"
-                  href={
-                    user?.profile?.resume 
-                  }
-                  download="Resume.pdf"
-                  className=" rounded-xl text-blue-600 hover:underline font-bold cursor-pointer"
+                  href={user?.profile?.resume}
+                  className="text-blue-600 hover:underline cursor-pointer"
                 >
-                  Download Resume
+                  Download
+                  {user?.profile?.resumeOriginalName}
                 </a>
               ) : (
-                <span>No Resume Found.</span>
+                <span>No Resume Found</span>
               )}
             </div>
           </div>
         </div>
       </div>
-      <div className="max-w-4xl mx-auto rounded-2xl">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl">
         <h1 className="text-lg my-5 font-bold">Applied Jobs</h1>
 
         {/* Add Application Table */}
-        <AppliedJobs />
+        <AppliedJob />
       </div>
+
+      {/* Edit Profile Modal */}
       <EditProfileModal open={open} setOpen={setOpen} />
     </div>
   );
