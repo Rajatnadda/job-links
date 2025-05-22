@@ -1,30 +1,26 @@
-import { setAllJobs } from "@/redux/jobSlice";
+import { setAllAdminJobs } from "@/redux/jobSlice";
 import { JOB_API_ENDPOINT } from "@/utils/data";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-const useGetAllJobs = () => {
+const useGetAllAdminJobs = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { searchedQuery } = useSelector((store) => store.job);
 
   useEffect(() => {
-    const fetchAllJobs = async () => {
+    const fetchAllAdminJobs = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(
-          `${JOB_API_ENDPOINT}/get?keyword=${searchedQuery}`,
-          {
-            withCredentials: true,
-          }
-        );
+        const res = await axios.get(`${JOB_API_ENDPOINT}/getadminjobs`, {
+          withCredentials: true,
+        });
         console.log("API Response:", res.data);
         if (res.data.status) {
           // Updated success check
-          dispatch(setAllJobs(res.data.jobs));
+          dispatch(setAllAdminJobs(res.data.jobs));
         } else {
           setError("Failed to fetch jobs.");
         }
@@ -36,10 +32,10 @@ const useGetAllJobs = () => {
       }
     };
 
-    fetchAllJobs();
+    fetchAllAdminJobs();
   }, [dispatch]);
 
   return { loading, error };
 };
 
-export default useGetAllJobs;
+export default useGetAllAdminJobs;

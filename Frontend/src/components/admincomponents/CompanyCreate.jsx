@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { COMPANY_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { setSingleCompany } from "@/redux/companyslice";
 import axios from "axios";
+import { setSingleCompany } from "@/redux/CompanySlice";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
