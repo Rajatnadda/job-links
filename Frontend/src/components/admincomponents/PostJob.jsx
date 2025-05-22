@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../components_lite/Navbar";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
+
 import { useSelector } from "react-redux";
 import { Store } from "lucide-react";
 import {
@@ -19,8 +17,11 @@ import { JOB_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
-const companyArray = [];
+// const companyArray = [];
 
 const PostJob = () => {
   const [input, setInput] = useState({

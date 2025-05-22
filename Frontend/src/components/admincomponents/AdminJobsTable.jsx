@@ -10,14 +10,14 @@ import {
 } from "../ui/table";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Edit2, Eye, MoreHorizontal } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Edit2, Eye, MoreHorizontal} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const AdminJobsTable = () => {
-  const { companies} = useSelector(
-    (store) => store.company
-  );
+  // const { companies } = useSelector(
+  //   (store) => store.company
+  // );
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const AdminJobsTable = () => {
   useEffect(() => {
     const filteredJobs =
       allAdminJobs.length >= 0 &&
-      allAdminJobs.filter((job) => {
+      (allAdminJobs || []).filter((job) => {
         if (!searchJobByText) {
           return true;
         }
@@ -40,10 +40,10 @@ const AdminJobsTable = () => {
     setFilterJobs(filteredJobs);
   }, [allAdminJobs, searchJobByText]);
 
-  console.log("COMPANIES", companies);
-  if (!companies) {
-    return <div>Loading...</div>;
-  }
+  // console.log("COMPANIES", companies);
+  // if (!companies) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <div>
@@ -63,7 +63,7 @@ const AdminJobsTable = () => {
             <span>No Job Added</span>
           ) : (
             filterJobs?.map((job) => (
-              <TableRow key={job.id}>
+              <TableRow key={job._id}>
                 <TableCell>{job?.company?.name}</TableCell>
                 <TableCell>{job.title}</TableCell>
                 <TableCell>{job.createdAt.split("T")[0]}</TableCell>
@@ -74,7 +74,7 @@ const AdminJobsTable = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-32">
                       <div
-                        onClick={() => navigate(`/admin/companies/${job._id}`)}
+                        onClick={() => navigate(`/admin/jobs/edit/${job._id}`)}
                         className="flex items-center gap-2 w-fit cursor-pointer mb-1"
                       >
                         <Edit2 className="w-4" />

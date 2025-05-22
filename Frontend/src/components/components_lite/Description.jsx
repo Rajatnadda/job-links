@@ -14,8 +14,8 @@ const Description = () => {
 
   const { singleJob } = useSelector((store) => store.job);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [/*loading*/, setLoading] = useState(false);
+  const [/*error*/, setError] = useState(null);
   const { user } = useSelector((store) => store.auth);
 
   const isIntiallyApplied =
