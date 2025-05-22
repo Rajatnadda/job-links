@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const AdminJobsTable = () => {
-  const { companies, searchCompanyByText } = useSelector(
+  const { companies} = useSelector(
     (store) => store.company
   );
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
