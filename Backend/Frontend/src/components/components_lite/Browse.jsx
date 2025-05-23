@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import Navbar from "./Navbar";
-import Job1 from "./Job1";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchedQuery } from "@/redux/jobSlice";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
+import Job1 from "./job1";
 
 const Browse = () => {
   useGetAllJobs();
