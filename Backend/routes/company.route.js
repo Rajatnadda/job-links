@@ -1,7 +1,8 @@
 import express from 'express';
 import authenticateToken from '../middleware/isAuthenticated.js';
-import { getAllCompanies, getCompanyById, registerCompany, updateCompany } from '../controllers/Company.controller.js'; // Changed getAllCompany to getAllCompanies
+
 import { singleUpload } from '../middleware/multer.js';
+import { getAllCompanies, getCompanyById, registerCompany, updateCompany } from '../controllers/Company.controller.js';
 
 const router = express.Router();
 router.route("/register").post(authenticateToken, registerCompany);
