@@ -23,7 +23,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="bg-violet-500">
+      <div>
       <Navbar />
       <Header />
       <Categories />
@@ -31,6 +32,7 @@ const Home = () => {
       {error && <p>Error: {error}</p>}
       {!loading && !error && <LatestJobs jobs={jobs} />}
       <Footer />
+    </div>
     </div>
   );
 };
