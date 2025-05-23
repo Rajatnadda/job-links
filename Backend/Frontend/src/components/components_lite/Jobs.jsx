@@ -6,18 +6,15 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 
 const Jobs = () => {
-  const { allJobs, searchedQuery } = useSelector((store) => store.job);
-  const [filterJobs, setFilterJobs] = useState(allJobs);
+  const { allJobs = [], searchedQuery } = useSelector((store) => store.job);
+  const [filterJobs, setFilterJobs] = useState(allJobs || []);
 
   useEffect(() => {
-    // If no search query is provided, reset to all jobs
-    //     if (searchedQuery)
     if (!searchedQuery || searchedQuery.trim() === "") {
       setFilterJobs(allJobs);
       return;
     }
 
-    // Filter based on the searched query across various fields (title, description, etc.)
     const filteredJobs = allJobs.filter((job) => {
       const query = searchedQuery.toLowerCase();
       return (
@@ -41,7 +38,7 @@ const Jobs = () => {
             <FilterCard />
           </div>
 
-          {filterJobs.length <= 0 ? (
+          {(!filterJobs || filterJobs.length === 0) ? (
             <span>Job not found</span>
           ) : (
             <div className="flex-1 h-[88vh] overflow-y-auto pb-5">
@@ -65,5 +62,6 @@ const Jobs = () => {
     </div>
   );
 };
+
 
 export default Jobs;

@@ -8,7 +8,7 @@ const useGetAllJobs = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { searchedQuery } = useSelector((store) => store.job);
+  const { searchedQuery, jobs } = useSelector((store) => store.job); // ⬅️ Include jobs here
 
   useEffect(() => {
     const fetchAllJobs = async () => {
@@ -23,7 +23,6 @@ const useGetAllJobs = () => {
         );
         console.log("API Response:", res.data);
         if (res.data.status) {
-          // Updated success check
           dispatch(setAllJobs(res.data.jobs));
         } else {
           setError("Failed to fetch jobs.");
@@ -37,9 +36,9 @@ const useGetAllJobs = () => {
     };
 
     fetchAllJobs();
-  }, [dispatch]);
+  }, [dispatch, searchedQuery]); // also include searchedQuery in deps
 
-  return { loading, error };
+  return { loading, error, jobs }; // ✅ Return jobs
 };
 
 export default useGetAllJobs;
