@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:5173", // or "*" if testing
+  origin: "https://job-links.onrender.com", // or "*" if testing
   credentials: true
 }));
  
