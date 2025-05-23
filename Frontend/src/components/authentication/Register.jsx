@@ -17,57 +17,36 @@ const Register = () => {
     password: "",
     role: "",
     phoneNumber: "",
+    pancard: "",
+    adharcard: "",
     file: "",
   });
 
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
-  const { loading, user } = useSelector((store) => store.auth);
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
-
+  const { loading } = useSelector((store) => store.auth);
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-
   const ChangeFilehandler = (e) => {
     setInput({ ...input, file: e.target.files?.[0] });
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    const { fullname, email, password, role, phoneNumber } = input;
-
-    if (!fullname || !email || !password || !role || !phoneNumber) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error("Please enter a valid email address.");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long.");
-      return;
-    }
-
     const formData = new FormData();
-    formData.append("fullname", fullname);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("role", role);
-    formData.append("phoneNumber", phoneNumber);
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("password", input.password);
+    formData.append("pancard", input.pancard);
+    formData.append("adharcard", input.adharcard);
+    formData.append("role", input.role);
+    formData.append("phoneNumber", input.phoneNumber);
     if (input.file) {
       formData.append("file", input.file);
     }
-
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
@@ -75,117 +54,125 @@ const Register = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        navigate("/Login");
+        navigate("/login");
         toast.success(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error(
-        error.response?.data?.message || "Something went wrong. Try again."
-      );
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "An unexpected error occurred.";
+      toast.error(errorMessage);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
+  const { user } = useSelector((store) => store.auth);
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
   return (
     <div>
-      <Navbar />
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+      <Navbar></Navbar>
+      <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
-          className="w-full max-w-xl bg-white p-8 shadow-xl rounded-2xl border"
+          className="w-1/2 border border-gray-500 rounded-md p-4 my-10"
         >
-          <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
-            Create Your Account
-          </h2>
-
-          {/* Full Name */}
-          <div className="mb-4">
-            <Label className="block mb-1">Fullname</Label>
+          <h1 className="font-bold text-xl mb-5 text-center text-blue-600">
+            Register
+          </h1>
+          <div className="my-2">
+            <Label>Fullname</Label>
             <Input
               type="text"
-              name="fullname"
               value={input.fullname}
+              name="fullname"
               onChange={changeEventHandler}
-              placeholder="e.g., John Doe"
-              required
-            />
+              placeholder="John Doe"
+            ></Input>
           </div>
-
-          {/* Email */}
-          <div className="mb-4">
-            <Label className="block mb-1">Email</Label>
+          <div className="my-2">
+            <Label>Email</Label>
             <Input
               type="email"
-              name="email"
               value={input.email}
+              name="email"
               onChange={changeEventHandler}
-              placeholder="e.g., user@example.com"
-              required
-            />
+              placeholder="johndoe@gmail.com"
+            ></Input>
           </div>
-
-          {/* Password */}
-          <div className="mb-4">
-            <Label className="block mb-1">Password</Label>
+          <div className="my-2">
+            <Label>Password</Label>
             <Input
               type="password"
-              name="password"
               value={input.password}
+              name="password"
               onChange={changeEventHandler}
-              placeholder="Minimum 6 characters"
-              required
-              autoComplete="current-password"
-            />
+              placeholder="********"
+            ></Input>
           </div>
-
-          {/* Phone Number */}
-          <div className="mb-4">
-            <Label className="block mb-1">Phone Number</Label>
+          <div>
+            <Label>PAN Card Number</Label>
+            <Input
+              type="text"
+              value={input.pancard}
+              name="pancard"
+              onChange={changeEventHandler}
+              placeholder="ABCDEF1234G"
+            ></Input>
+          </div>
+          <div>
+            <Label>Adhar Card Number</Label>
+            <Input
+              type="text"
+              value={input.adharcard}
+              name="adharcard"
+              onChange={changeEventHandler}
+              placeholder="123456789012"
+            ></Input>
+          </div>
+          <div className="my-2">
+            <Label>Phone Number</Label>
             <Input
               type="tel"
-              name="phoneNumber"
               value={input.phoneNumber}
+              name="phoneNumber"
               onChange={changeEventHandler}
-              placeholder="e.g., +919876543210"
-              required
-            />
+              placeholder="+1234567890"
+            ></Input>
           </div>
-
-          {/* Role */}
-          <div className="mb-4">
-            <Label className="block mb-2">Select Role</Label>
-            <RadioGroup className="flex space-x-6">
+          <div className="flex items-center justify-between">
+            <RadioGroup className="flex items-center gap-4 my-5 ">
               <div className="flex items-center space-x-2">
                 <Input
-                  id="roleStudent"
                   type="radio"
                   name="role"
                   value="Student"
                   checked={input.role === "Student"}
                   onChange={changeEventHandler}
-                  required
+                  className="cursor-pointer"
                 />
-                <Label htmlFor="roleStudent">Student</Label>
+                <Label htmlFor="r1">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
-                  id="roleRecruiter"
                   type="radio"
                   name="role"
                   value="Recruiter"
                   checked={input.role === "Recruiter"}
                   onChange={changeEventHandler}
+                  className="cursor-pointer"
                 />
-                <Label htmlFor="roleRecruiter">Recruiter</Label>
+                <Label htmlFor="r2">Recruiter</Label>
               </div>
             </RadioGroup>
           </div>
-
-          {/* Profile Photo */}
-          <div className="mb-4">
-            <Label className="block mb-1">Profile Photo</Label>
+          <div className="flex items-center gap-2">
+            <Label>Profile Photo</Label>
             <Input
               type="file"
               accept="image/*"
@@ -193,20 +180,24 @@ const Register = () => {
               className="cursor-pointer"
             />
           </div>
+          {loading ? (
+            <div className="flex items-center justify-center my-10">
+              <div className="spinner-border text-blue-600" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="block w-full py-3 my-3 text-white bg-primary hover:bg-primary/90 rounded-md"
+            >
+              Register
+            </button>
+          )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-md font-medium transition-all duration-200 disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? "Processing..." : "Register"}
-          </button>
-
-          {/* Login Link */}
-          <p className="text-center text-gray-600 mt-4 text-sm">
+          <p className="text-gray-500 text-md my-2">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 font-semibold underline">
+            <Link to="/login" className="text-blue-700 font-semibold">
               Login
             </Link>
           </p>

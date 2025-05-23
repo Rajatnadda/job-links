@@ -15,16 +15,20 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    pancard: {
-      type: String,
-      unique: true,
-      sparse: true, // Reflects the sparse unique index
-    },
     password: {
       type: String,
       required: true,
     },
-   
+    pancard: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    adharcard: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     role: {
       type: String,
       enum: ["Student", "Recruiter"],
@@ -56,4 +60,3 @@ const userSchema = new mongoose.Schema(
 );
 
 export const User = mongoose.model("User", userSchema);
-export default User;
