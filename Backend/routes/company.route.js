@@ -2,7 +2,7 @@ import express from 'express';
 import authenticateToken from '../middleware/isAuthenticated.js';
 
 import { singleUpload } from '../middleware/multer.js';
-import { getAllCompanies, getCompanyById, registerCompany, updateCompany } from '../controllers/Company.controller.js';
+import { getAllCompanies, getCompanyById, registerCompany, updateCompany } from '../controllers/company.controller.js';
 
 const router = express.Router();
 router.route("/register").post(authenticateToken, registerCompany);
