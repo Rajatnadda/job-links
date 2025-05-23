@@ -7,30 +7,15 @@ const filterData = [
   {
     filterType: "Location",
     array: [
-      "Delhi",
-      "Mumbai",
-      "Kolhapur",
-      "Pune",
-      "Bangalore",
-      "Hyderabad",
-      "Chennai",
-      "Remote",
+      "Delhi", "Mumbai", "Kolhapur", "Pune",
+      "Bangalore", "Hyderabad", "Chennai", "Remote"
     ],
   },
   {
     filterType: "Technology",
     array: [
-      "Mern",
-      "React",
-      "Data Scientist",
-      "Fullstack",
-      "Node",
-      "Python",
-      "Java",
-      "frontend",
-      "backend",
-      "mobile",
-      "desktop",
+      "Mern", "React", "Data Scientist", "Fullstack",
+      "Node", "Python", "Java", "frontend", "backend", "mobile", "desktop"
     ],
   },
   {
@@ -45,10 +30,8 @@ const filterData = [
 
 const FilterCard = () => {
   const [selectedValue, setSelectedValue] = useState("");
-  const handleChange = (value) => {
-    setSelectedValue(value);
-  };
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(setSearchedQuery(selectedValue));
   }, [selectedValue]);
@@ -57,16 +40,15 @@ const FilterCard = () => {
     <div className="w-full bg-white rounded-md">
       <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
-      <RadioGroup value={selectedValue} onValueChange={handleChange}>
+      <RadioGroup value={selectedValue} onValueChange={setSelectedValue}>
         {filterData.map((data, index) => (
           <div key={index}>
             <h2 className="font-bold text-lg">{data.filterType}</h2>
-
             {data.array.map((item, indx) => {
               const itemId = `Id${index}-${indx}`;
               return (
                 <div key={itemId} className="flex items-center space-x-2 my-2">
-                  <RadioGroupItem value={item} id={itemId}></RadioGroupItem>
+                  <RadioGroupItem value={item} id={itemId} />
                   <label htmlFor={itemId}>{item}</label>
                 </div>
               );
@@ -78,4 +60,4 @@ const FilterCard = () => {
   );
 };
 
-export default FilterCard; 
+export default FilterCard;
