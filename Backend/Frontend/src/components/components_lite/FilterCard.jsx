@@ -43,7 +43,7 @@ const filterData = [
   },
 ];
 
-const Filter = () => {
+const FilterCard = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const handleChange = (value) => {
     setSelectedValue(value);
@@ -78,4 +78,4 @@ const Filter = () => {
   );
 };
 
-export default Filter; 
+export default FilterCard; 

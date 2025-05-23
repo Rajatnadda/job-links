@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Job1 from "./Job1";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import FilterCard from "./FilterCard";
 
 const Jobs = () => {
   const { allJobs = [], searchedQuery } = useSelector((store) => store.job);
