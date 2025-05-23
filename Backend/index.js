@@ -7,7 +7,8 @@ import userRoute from "./routes/user.routes.js";
 import companyRoute from "./routes/company.route.js";
 import jobRoute from "./routes/job.route.js";
 import aplicationRoute from "./routes/application.route.js";
-dotenv.config({});
+dotenv.config();
+
 const app = express();
 
 app.use(express.json());
@@ -15,10 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: "http://localhost:5175",
-  credentials: true,
+
 };
-app.use(cors(corsOptions)); 
+app.use(cors()); 
 
 const PORT = process.env.PORT || 5002; // Or any other port you expect to be free
 

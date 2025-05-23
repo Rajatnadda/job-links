@@ -1,12 +1,12 @@
 import express from 'express';
 import authenticateToken from '../middleware/isAuthenticated.js';
-import { getAllCompany, getCompanyById, registerCompany, updateCompany } from '../controllers/Company.controller.js';
+import { getAllCompanies, getCompanyById, registerCompany, updateCompany } from '../controllers/Company.controller.js'; // Changed getAllCompany to getAllCompanies
 import { singleUpload } from '../middleware/multer.js';
 
 const router = express.Router();
 router.route("/register").post(authenticateToken, registerCompany);
-router.route("/get/").get(authenticateToken, getAllCompany);
+router.route("/get/").get(authenticateToken, getAllCompanies); // Changed getAllCompany to getAllCompanies
 router.route("/get/:id").get(authenticateToken, getCompanyById);
-router.route("/update/:id ").put(authenticateToken, singleUpload, updateCompany);
+router.route("/update/:id").put(authenticateToken, singleUpload, updateCompany); // Removed trailing space
 
 export default router;
