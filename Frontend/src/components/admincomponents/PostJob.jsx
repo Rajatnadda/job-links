@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import Navbar from "../components_lite/Navbar";
 
 import { useSelector } from "react-redux";
-import { Store } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
@@ -20,8 +18,6 @@ import { Loader2 } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
-// const companyArray = [];
 
 const PostJob = () => {
   const [input, setInput] = useState({
@@ -37,9 +33,11 @@ const PostJob = () => {
   });
   const navigate = useNavigate();
   const { companies } = useSelector((store) => store.company);
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
   const [loading, setLoading] = useState(false);
 
   const selectChangeHandler = (value) => {
@@ -72,114 +70,157 @@ const PostJob = () => {
       } else {
         toast.error("An unexpected error occurred");
       }
-      
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="flex items-center justify-center w-screen my-5">
+      <div className="flex justify-center w-full py-8 px-4">
         <form
           onSubmit={submitHandler}
-          className="p-8 max-w-4xl border border-gray-500 shadow-sm hover:shadow-xl hover:shadow-red-300 rounded-lg"
+          className="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 p-10 transition-shadow hover:shadow-2xl"
         >
-          <div className="grid grid-cols-2 gap-5">
+          <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">
+            Post a New Job
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label>Title</Label>
+              <Label htmlFor="title" className="font-medium text-gray-700">
+                Job Title
+              </Label>
               <Input
+                id="title"
                 type="text"
                 name="title"
                 value={input.title}
                 placeholder="Enter job title"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
                 onChange={changeEventHandler}
+                required
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Description</Label>
+              <Label htmlFor="description" className="font-medium text-gray-700">
+                Job Description
+              </Label>
               <Input
+                id="description"
+                type="text"
                 name="description"
                 value={input.description}
                 placeholder="Enter job description"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400 "
                 onChange={changeEventHandler}
+                required
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Location</Label>
+              <Label htmlFor="location" className="font-medium text-gray-700">
+                Location
+              </Label>
               <Input
+                id="location"
                 type="text"
                 name="location"
                 value={input.location}
                 placeholder="Enter job location"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
                 onChange={changeEventHandler}
+                required
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Salary</Label>
+              <Label htmlFor="salary" className="font-medium text-gray-700">
+                Salary
+              </Label>
               <Input
+                id="salary"
                 type="number"
                 name="salary"
                 value={input.salary}
                 placeholder="Enter job salary"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
                 onChange={changeEventHandler}
+                min={0}
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Position</Label>
+              <Label htmlFor="position" className="font-medium text-gray-700">
+                Position (Number of Vacancies)
+              </Label>
               <Input
+                id="position"
                 type="number"
                 name="position"
                 value={input.position}
-                placeholder="Enter job position"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
+                placeholder="Enter number of positions"
                 onChange={changeEventHandler}
+                min={0}
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Requirements</Label>
+              <Label htmlFor="requirements" className="font-medium text-gray-700">
+                Requirements
+              </Label>
               <Input
+                id="requirements"
                 type="text"
                 name="requirements"
                 value={input.requirements}
                 placeholder="Enter job requirements"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
                 onChange={changeEventHandler}
+                className="mt-2"
               />
             </div>
 
             <div>
-              <Label>Experience</Label>
+              <Label htmlFor="experience" className="font-medium text-gray-700">
+                Experience (Years)
+              </Label>
               <Input
+                id="experience"
                 type="number"
                 name="experience"
                 value={input.experience}
-                placeholder="Enter job experience"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
+                placeholder="Enter years of experience"
                 onChange={changeEventHandler}
-              />
-            </div>
-            <div>
-              <Label>Job Type</Label>
-              <Input
-                type="text"
-                name="jobType"
-                value={input.jobType}
-                placeholder="Enter job type"
-                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
-                onChange={changeEventHandler}
+                min={0}
+                className="mt-2"
               />
             </div>
 
             <div>
-              {companies.length > 0 && (
+              <Label htmlFor="jobType" className="font-medium text-gray-700">
+                Job Type
+              </Label>
+              <Input
+                id="jobType"
+                type="text"
+                name="jobType"
+                value={input.jobType}
+                placeholder="Full-time, Part-time, etc."
+                onChange={changeEventHandler}
+                className="mt-2"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <Label className="font-medium text-gray-700 mb-1">
+                Select Company
+              </Label>
+              {companies.length > 0 ? (
                 <Select onValueChange={selectChangeHandler}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full max-w-xs border border-gray-300 rounded-md shadow-sm hover:border-indigo-500 focus:ring-indigo-500 focus:ring-2">
                     <SelectValue placeholder="Select a Company" />
                   </SelectTrigger>
                   <SelectContent>
@@ -195,29 +236,32 @@ const PostJob = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+              ) : (
+                <p className="text-red-600 font-semibold mt-2">
+                  *Please register a company to post jobs.*
+                </p>
               )}
             </div>
           </div>
-          <div className="flex items-center justify-center mt-5">
+
+          <div className="mt-10">
             {loading ? (
-              <Button className="w-full px-4 py-2 text-sm text-white bg-black rounded-md ">
-                {" "}
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
+              <Button
+                disabled
+                className="w-full flex justify-center items-center gap-2 py-3 bg-gray-700 text-white rounded-md cursor-not-allowed"
+              >
+                <Loader2 className="animate-spin" size={20} />
+                Posting...
               </Button>
             ) : (
               <Button
                 type="submit"
-                className="w-full px-4 py-2 text-sm text-white bg-black rounded-md hover:bg-blue-600"
+                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition"
               >
                 Post Job
               </Button>
             )}
           </div>
-          {companies.length === 0 && (
-            <p className="text-sm font-bold my-3 text-center text-red-600">
-              *Please register a company to post jobs.*
-            </p>
-          )}
         </form>
       </div>
     </div>

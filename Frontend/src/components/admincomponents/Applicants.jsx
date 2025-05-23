@@ -26,15 +26,28 @@ const Applicants = () => {
       }
     };
     fetchAllApplicants();
-  }, []);
+  }, [params.id, dispatch]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-7xl mx-auto">
-        <h1 className="font-bold text-xl my-5">
-          Applicants {applicants?.applications?.length}
-        </h1>
-        <ApplicantsTable />
+
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-blue-700">
+            Applicants Overview
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Total Applicants:{" "}
+            <span className="font-semibold text-gray-800">
+              {applicants?.applications?.length || 0}
+            </span>
+          </p>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <ApplicantsTable />
+        </div>
       </div>
     </div>
   );

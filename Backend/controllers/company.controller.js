@@ -2,16 +2,20 @@ import { Company } from "../models/company.model.js";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from '../utils/cloud.js';
 
-
 export const registerCompany = async (req, res) => {
   try {
     const { companyName } = req.body;
+
+    // Debugging: check user info
+    console.log("req.user:", req.user);
+
     if (!companyName) {
       return res.status(400).json({
         message: "Company name is required",
         success: false,
       });
     }
+
     let company = await Company.findOne({ name: companyName });
     if (company) {
       return res.status(409).json({
@@ -19,10 +23,13 @@ export const registerCompany = async (req, res) => {
         success: false,
       });
     }
+
+    // Use req.user.id (or req.user._id) depending on your auth middleware
     company = await Company.create({
       name: companyName,
-      userId: req.id, // Assuming req.id is populated by your authentication middleware
+      userId: req.user?.id || req.user?._id, // safely accessing user ID
     });
+
     return res.status(201).json({
       message: "Company registered successfully.",
       company,
@@ -38,12 +45,12 @@ export const registerCompany = async (req, res) => {
   }
 };
 
-export const getAllCompanies = async (req, res) => { // Renamed from getAllCompany to follow plural convention
+export const getAllCompanies = async (req, res) => {
   try {
-    const userId = req.id; // loggedin user id
+    const userId = req.user?.id || req.user?._id;
     const companies = await Company.find({ userId });
     if (!companies || companies.length === 0) {
-      return res.status(200).json({ // Or 404 if you prefer, but 200 with empty array is also common
+      return res.status(200).json({
         message: "No companies found for this user.",
         companies: [],
         success: true
@@ -59,7 +66,6 @@ export const getAllCompanies = async (req, res) => { // Renamed from getAllCompa
   }
 };
 
-//get company by id
 export const getCompanyById = async (req, res) => {
   try {
     const companyId = req.params.id;
@@ -74,7 +80,6 @@ export const getCompanyById = async (req, res) => {
   }
 };
 
-//update company details
 export const updateCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
@@ -87,13 +92,11 @@ export const updateCompany = async (req, res) => {
     if (location) updateData.location = location;
 
     if (file) {
-      //cloudinary
       const fileUri = getDataUri(file);
       if (fileUri && fileUri.content) {
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
         updateData.logo = cloudResponse.secure_url;
       } else {
-        // Handle case where fileUri might be invalid, though getDataUri should ideally throw if file is bad
         console.warn("Could not process file for Cloudinary upload.");
       }
     }

@@ -21,86 +21,126 @@ const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
 
   const statusHandler = async (status, id) => {
-    console.log("called");
     try {
       axios.defaults.withCredentials = true;
       const res = await axios.post(
         `${APPLICATION_API_ENDPOINT}/status/${id}/update`,
         { status }
       );
-      console.log(res);
       if (res.data.success) {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
 
   return (
-    <div>
-      <Table>
-        <TableCaption>A list of your recent applied user</TableCaption>
+    <div className="p-6 bg-white rounded-lg shadow-md max-w-full overflow-x-auto">
+      <Table className="min-w-full border-collapse border border-gray-200">
+        <TableCaption className="text-gray-500 text-sm mb-4">
+          A list of your recent applicants
+        </TableCaption>
         <TableHeader>
-          <TableRow>
-            <TableHead>FullName</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Resume</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+          <TableRow className="bg-gray-100">
+            <TableHead className="text-left text-gray-700 px-4 py-3 font-semibold text-sm border-b border-gray-300">
+              Full Name
+            </TableHead>
+            <TableHead className="text-left text-gray-700 px-4 py-3 font-semibold text-sm border-b border-gray-300">
+              Email
+            </TableHead>
+            <TableHead className="text-left text-gray-700 px-4 py-3 font-semibold text-sm border-b border-gray-300">
+              Contact
+            </TableHead>
+            <TableHead className="text-left text-gray-700 px-4 py-3 font-semibold text-sm border-b border-gray-300">
+              Resume
+            </TableHead>
+            <TableHead className="text-left text-gray-700 px-4 py-3 font-semibold text-sm border-b border-gray-300">
+              Date Applied
+            </TableHead>
+            <TableHead className="text-right text-gray-700 px-4 py-3 font-semibold text-sm border-b border-gray-300">
+              Action
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {applicants &&
-            applicants?.applications?.map((item) => (
-              <tr key={item._id}>
-                <TableCell>{item?.applicant?.fullname}</TableCell>
-                <TableCell>{item?.applicant?.email}</TableCell>
-                <TableCell>{item?.applicant?.phoneNumber}</TableCell>
-                <TableCell>
+          {applicants?.applications?.length ? (
+            applicants.applications.map((item) => (
+              <TableRow
+                key={item._id}
+                className="hover:bg-gray-50 transition-colors duration-150 cursor-default"
+              >
+                <TableCell className="px-4 py-3 border-b border-gray-200 text-gray-800">
+                  {item?.applicant?.fullname || "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-3 border-b border-gray-200 text-blue-600 underline break-words max-w-xs">
+                  {item?.applicant?.email || "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-3 border-b border-gray-200 text-gray-800">
+                  {item?.applicant?.phoneNumber || "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-3 border-b border-gray-200">
                   {item.applicant?.profile?.resume ? (
                     <a
-                      className="text-blue-600 cursor-pointer"
-                      href={item?.applicant?.profile?.resume}
+                      className="text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200"
+                      href={item.applicant.profile.resume}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Download
-                      {/* {item?.applicant?.profile?.resume} */}
                     </a>
                   ) : (
-                    <span>NA</span>
+                    <span className="text-gray-400">N/A</span>
                   )}
                 </TableCell>
-                <TableCell>{item?.applicant?.createdAt.split("T")[0]}</TableCell>
-                <TableCell className="float-right cursor-pointer">
+                <TableCell className="px-4 py-3 border-b border-gray-200 text-gray-600">
+                  {item?.applicant?.createdAt
+                    ? new Date(item.applicant.createdAt).toLocaleDateString()
+                    : "N/A"}
+                </TableCell>
+                <TableCell className="px-4 py-3 border-b border-gray-200 text-right">
                   <Popover>
                     <PopoverTrigger>
-                      <MoreHorizontal />
+                      <button
+                        aria-label="More actions"
+                        className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+                      >
+                        <MoreHorizontal size={20} className="text-gray-600" />
+                      </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-32">
-                       {shortlistingStatus.map((status, index) => {
-                          return (
-                            <div
-                              onClick={() => statusHandler(status, item?._id)}
-                              key={index}
-                              className="flex w-fit items-center my-2 cursor-pointer"
-                            >
-                              <input
-                                type="radio"
-                                name="shortlistingStatus"
-                                value={status}
-                              />{" "}
-                              {status}
-                            </div>
-                          );
-                        })}
-                      </PopoverContent>
+                    <PopoverContent className="w-36 bg-white border border-gray-300 rounded-md shadow-lg p-2">
+                      {shortlistingStatus.map((status, index) => (
+                        <label
+                          key={index}
+                          htmlFor={`status-${item._id}-${status}`}
+                          className="flex items-center space-x-2 p-2 hover:bg-indigo-50 rounded cursor-pointer transition-colors"
+                          onClick={() => statusHandler(status, item._id)}
+                        >
+                          <input
+                            id={`status-${item._id}-${status}`}
+                            type="radio"
+                            name={`shortlistingStatus-${item._id}`}
+                            value={status}
+                            className="cursor-pointer"
+                          />
+                          <span className="text-gray-700 font-medium">{status}</span>
+                        </label>
+                      ))}
+                    </PopoverContent>
                   </Popover>
                 </TableCell>
-              </tr>
-            ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={6}
+                className="text-center py-6 text-gray-500 italic"
+              >
+                No applicants found.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

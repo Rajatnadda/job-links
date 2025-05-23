@@ -14,6 +14,8 @@ import useGetCompanyById from "@/hooks/useGetCompanyById.jsx";
 const CompanySetup = () => {
   const params = useParams();
   useGetCompanyById(params.id);
+  const { singleCompany } = useSelector((store) => store.company);
+
   const [input, setInput] = useState({
     name: "",
     description: "",
@@ -21,7 +23,6 @@ const CompanySetup = () => {
     location: "",
     file: null,
   });
-  const { singleCompany } = useSelector((store) => store.company);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -57,9 +58,7 @@ const CompanySetup = () => {
           withCredentials: true,
         }
       );
-      console.log(res); // Debugging API response
 
-      // Assuming a successful response has a `message` property
       if (res.status === 200 && res.data.message) {
         toast.success(res.data.message);
         navigate("/admin/companies");
@@ -81,84 +80,124 @@ const CompanySetup = () => {
       description: singleCompany.description || "",
       website: singleCompany.website || "",
       location: singleCompany.location || "",
-      file: singleCompany.file || null,
+      file: null, // reset file input for new upload
     });
   }, [singleCompany]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-xl mx-auto my-10">
-        <form onSubmit={submitHandler}>
-          <div className="flex items-center gap-5 p-8">
-            <Button
-              onClick={() => navigate("/admin/companies")}
-              variant="outline"
-              className="flex items-center gap-2 text-gray-500 font-semibold"
-            >
-              <ArrowLeft />
-              <span>Back</span>
-            </Button>
-            <h1 className="font-bold text-xl">Company Setup</h1>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
+      <main className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-10 mt-10">
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            onClick={() => navigate("/admin/companies")}
+            variant="outline"
+            className="flex items-center gap-2 text-gray-600 font-semibold hover:text-gray-900 hover:border-gray-900 transition"
+          >
+            <ArrowLeft size={20} />
+            <span>Back</span>
+          </Button>
+          <h1 className="text-3xl font-bold text-gray-900">Company Setup</h1>
+        </div>
+
+        <form onSubmit={submitHandler} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label>Company Name</Label>
+              <Label htmlFor="name" className="font-semibold text-gray-700">
+                Company Name
+              </Label>
               <Input
-                type="text"
+                id="name"
                 name="name"
+                type="text"
                 value={input.name}
                 onChange={changeEventHandler}
+                placeholder="Enter company name"
+                className="mt-2"
+                required
               />
             </div>
+
             <div>
-              <Label>Description</Label>
+              <Label htmlFor="description" className="font-semibold text-gray-700">
+                Description
+              </Label>
               <Input
-                type="text"
+                id="description"
                 name="description"
+                type="text"
                 value={input.description}
                 onChange={changeEventHandler}
+                placeholder="Brief description"
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Website</Label>
+              <Label htmlFor="website" className="font-semibold text-gray-700">
+                Website
+              </Label>
               <Input
-                type="text"
+                id="website"
                 name="website"
+                type="url"
                 value={input.website}
                 onChange={changeEventHandler}
+                placeholder="https://example.com"
+                className="mt-2"
               />
             </div>
+
             <div>
-              <Label>Location</Label>
+              <Label htmlFor="location" className="font-semibold text-gray-700">
+                Location
+              </Label>
               <Input
-                type="text"
+                id="location"
                 name="location"
+                type="text"
                 value={input.location}
                 onChange={changeEventHandler}
+                placeholder="City, Country"
+                className="mt-2"
               />
             </div>
-            <div>
-              <Label>Logo</Label>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="file" className="font-semibold text-gray-700">
+                Company Logo
+              </Label>
               <Input
+                id="file"
+                name="file"
                 type="file"
                 accept="image/*"
                 onChange={changeFileHandler}
+                className="mt-2"
               />
+              {input.file && (
+                <p className="mt-2 text-sm text-gray-600">
+                  Selected file: {input.file.name}
+                </p>
+              )}
             </div>
           </div>
-          {loading ? (
-            <Button className="w-full my-4">
-              {" "}
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
-            </Button>
-          ) : (
-            <Button type="submit" className="w-full my-4">
-              Update
-            </Button>
-          )}
+
+          <Button
+            type="submit"
+            className="w-full py-3 mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="animate-spin" size={20} /> Updating...
+              </span>
+            ) : (
+              "Update"
+            )}
+          </Button>
         </form>
-      </div>
+      </main>
     </div>
   );
 };
