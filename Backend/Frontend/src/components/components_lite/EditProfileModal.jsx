@@ -12,19 +12,19 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
-import { setLoading, setUser } from "@/redux/authSlice";
+import { setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
 
 const EditProfileModal = ({ open, setOpen }) => {
-  const [loading] = useState(false);
   const { user } = useSelector((store) => store.auth);
+  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState({
-    fullname: user?.fullname,
-    email: user?.email,
-    phoneNumber: user?.phoneNumber,
-    bio: user?.profile?.bio,
-    skills: user?.profile?.skills.map((skills) => skills),
-    file: user?.profile?.resume,
+    fullname: user?.fullname || "",
+    email: user?.email || "",
+    phoneNumber: user?.phoneNumber || "",
+    bio: user?.profile?.bio || "",
+    skills: user?.profile?.skills?.join(", ") || "",
+    file: user?.profile?.resume || null,
   });
 
   const dispatch = useDispatch();
@@ -33,12 +33,17 @@ const EditProfileModal = ({ open, setOpen }) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = async (e) => {
+  const fileChangeHandler = (e) => {
+    const file = e.target.files?.[0];
+    setInput({ ...input, file });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("name", input.fullname);
+    formData.append("fullname", input.fullname);
     formData.append("email", input.email);
-    formData.append("phone", input.phoneNumber);
+    formData.append("phoneNumber", input.phoneNumber);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
     if (input.file) {
@@ -57,105 +62,53 @@ const EditProfileModal = ({ open, setOpen }) => {
           withCredentials: true,
         }
       );
+
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
+        setOpen(false);
       }
     } catch (error) {
-      console.log(error);
-      toast.error("An unexpected error occured");
+      console.error(error);
+      toast.error("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
-    setOpen(false);
-    console.log(input);
-  };
-
-  const fileChangeHandler = (e) => {
-    const file = e.target.files?.[0];
-    setInput({ ...input, file });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        className="bg-white border-2 border-black sm:max-w-[500px]"
-        onInteractOutside={() => setOpen(false)}
-      >
+      <DialogContent className="bg-white border sm:max-w-[600px] rounded-lg shadow-xl">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold">Edit Profile</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleFileChange}>
-          <div className="bg-white grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <input
-                type="text"
-                id="name"
-                value={input.fullname}
-                name="name"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2"
-              />
-            </div>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-5 py-4">
+            {[
+              { id: "fullname", label: "Full Name" },
+              { id: "email", label: "Email", type: "email" },
+              { id: "phoneNumber", label: "Phone Number", type: "tel" },
+              { id: "bio", label: "Bio" },
+              { id: "skills", label: "Skills (comma separated)" },
+            ].map(({ id, label, type = "text" }) => (
+              <div key={id} className="flex flex-col">
+                <Label htmlFor={id} className="mb-1 text-gray-700 font-medium">
+                  {label}
+                </Label>
+                <input
+                  type={type}
+                  id={id}
+                  name={id}
+                  value={input[id]}
+                  onChange={changeEventHandler}
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                />
+              </div>
+            ))}
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
-                Email
-              </Label>
-              <input
-                type="email"
-                id="email"
-                value={input.email}
-                name="email"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">
-                PhoneNumber
-              </Label>
-              <input
-                type="tel"
-                id="phone"
-                value={input.phoneNumber}
-                name="phone"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="bio" className="text-right">
-                Bio
-              </Label>
-              <input
-                type="bio"
-                id="bio"
-                value={input.bio}
-                name="bio"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="skills" className="text-right">
-                Skills
-              </Label>
-              <input
-                type="text"
-                id="skills"
-                value={input.skills}
-                name="skills"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="file" className="text-right">
-                Resume File Upload
+            <div className="flex flex-col">
+              <Label htmlFor="file" className="mb-1 text-gray-700 font-medium">
+                Resume (PDF)
               </Label>
               <input
                 type="file"
@@ -163,25 +116,26 @@ const EditProfileModal = ({ open, setOpen }) => {
                 name="file"
                 accept="application/pdf"
                 onChange={fileChangeHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2"
+                className="block w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 file:text-violet-600 file:font-medium file:mr-3 file:border-none file:bg-gray-100"
               />
             </div>
           </div>
+
           <DialogFooter>
-            {loading ? (
-              <div className="flex items-center justify-center my-10 ">
-                <div className="spinner-border text-blue-600" role="status">
-                  <Button className="ww-full my-4">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> please
-                    Wait..
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <button className="block w-full ml-18  py-3 my-3 text-white bg-black hover:bg-black/70 rounded-4xl cursor-pointer">
-                Save
-              </button>
-            )}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-md"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2 h-5 w-5" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
