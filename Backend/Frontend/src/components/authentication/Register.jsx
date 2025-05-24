@@ -68,7 +68,7 @@ const Register = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white bg-fuchsia-700">
       <Navbar />
       <div className="flex items-center justify-center px-4 py-12">
         <form
