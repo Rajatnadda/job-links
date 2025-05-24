@@ -68,7 +68,7 @@ const Register = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white bg-fuchsia-700">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <Navbar />
       <div className="flex items-center justify-center px-4 py-12">
         <form
@@ -146,7 +146,7 @@ const Register = () => {
               name="phoneNumber"
               value={input.phoneNumber}
               onChange={changeEventHandler}
-              placeholder="+91 9876543210"
+              placeholder="9876543210"
               className="mt-1"
             />
           </div>
@@ -204,7 +204,7 @@ const Register = () => {
 
           <p className="text-center text-gray-600 text-sm">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 font-medium hover:underline">
+            <Link to="/login" className="text-blue-600 font-medium hover:underline shadow-stone-500 hover:p-2">
               Login here
             </Link>
           </p>
