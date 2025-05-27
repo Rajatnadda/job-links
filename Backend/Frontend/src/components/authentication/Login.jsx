@@ -135,10 +135,11 @@ const Login = () => {
             </Link>
           </p>
         </form>
-        <div>
+       
+      </div>
+       <div>
           <Footer />
         </div>
-      </div>
     </div>
   );
 };

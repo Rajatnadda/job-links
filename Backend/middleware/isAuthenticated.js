@@ -13,8 +13,7 @@ const authenticateToken = (req, res, next) => {
       return res.status(401).json({ message: "Invalid token", success: false });
     }
 
-    // ✅ Set this
-    req.user = { _id: decoded.userId };
+    req.id = decoded.userId;  // <-- This is the fix: set req.id
 
     next();
   } catch (error) {
