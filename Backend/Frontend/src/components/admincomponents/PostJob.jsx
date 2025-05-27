@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Navbar from "../components_lite/Navbar";
-
 import { useSelector } from "react-redux";
 import {
   Select,
@@ -31,20 +30,22 @@ const PostJob = () => {
     position: 0,
     companyId: "",
   });
+
   const navigate = useNavigate();
   const { companies } = useSelector((store) => store.company);
+  const [loading, setLoading] = useState(false);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const [loading, setLoading] = useState(false);
-
   const selectChangeHandler = (value) => {
     const selectedCompany = companies.find(
       (company) => company.name.toLowerCase() === value
     );
-    setInput({ ...input, companyId: selectedCompany._id });
+    if (selectedCompany) {
+      setInput({ ...input, companyId: selectedCompany._id });
+    }
   };
 
   const submitHandler = async (e) => {
@@ -57,171 +58,144 @@ const PostJob = () => {
         },
         withCredentials: true,
       });
+
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/admin/jobs");
       } else {
-        toast.error(res.data.message);
-        navigate("/admin/jobs");
+        toast.error(res.data.message || "Failed to post job");
       }
     } catch (error) {
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message || "Something went wrong");
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+      toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-100">
       <Navbar />
-      <div className="flex justify-center w-full py-8 px-4">
+      <div className="flex justify-center py-10 px-4">
         <form
           onSubmit={submitHandler}
-          className="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 p-10 transition-shadow hover:shadow-2xl"
+          className="max-w-4xl w-full bg-white border border-gray-200 shadow-xl rounded-2xl p-10 space-y-8"
         >
-          <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">
+          <h2 className="text-3xl font-bold text-indigo-700 text-center">
             Post a New Job
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label htmlFor="title" className="font-medium text-gray-700">
-                Job Title
-              </Label>
+              <Label htmlFor="title">Job Title</Label>
               <Input
                 id="title"
-                type="text"
                 name="title"
+                placeholder="Software Engineer"
                 value={input.title}
-                placeholder="Enter job title"
                 onChange={changeEventHandler}
                 required
-                className="mt-2"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="description" className="font-medium text-gray-700">
-                Job Description
-              </Label>
+              <Label htmlFor="description">Job Description</Label>
               <Input
                 id="description"
-                type="text"
                 name="description"
+                placeholder="Job summary or responsibilities"
                 value={input.description}
-                placeholder="Enter job description"
                 onChange={changeEventHandler}
                 required
-                className="mt-2"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="location" className="font-medium text-gray-700">
-                Location
-              </Label>
+              <Label htmlFor="location">Location</Label>
               <Input
                 id="location"
-                type="text"
                 name="location"
+                placeholder="e.g. New York, Remote"
                 value={input.location}
-                placeholder="Enter job location"
                 onChange={changeEventHandler}
                 required
-                className="mt-2"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="salary" className="font-medium text-gray-700">
-                Salary
-              </Label>
+              <Label htmlFor="salary">Salary</Label>
               <Input
                 id="salary"
-                type="number"
                 name="salary"
-                value={input.salary}
-                placeholder="Enter job salary"
-                onChange={changeEventHandler}
+                type="number"
                 min={0}
-                className="mt-2"
+                placeholder="e.g. 70000"
+                value={input.salary}
+                onChange={changeEventHandler}
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="position" className="font-medium text-gray-700">
-                Position (Number of Vacancies)
-              </Label>
+              <Label htmlFor="position">Number of Positions</Label>
               <Input
                 id="position"
-                type="number"
                 name="position"
+                type="number"
+                min={1}
+                placeholder="e.g. 3"
                 value={input.position}
-                placeholder="Enter number of positions"
                 onChange={changeEventHandler}
-                min={0}
-                className="mt-2"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="requirements" className="font-medium text-gray-700">
-                Requirements
-              </Label>
+              <Label htmlFor="requirements">Requirements</Label>
               <Input
                 id="requirements"
-                type="text"
                 name="requirements"
+                placeholder="e.g. React, Node.js"
                 value={input.requirements}
-                placeholder="Enter job requirements"
                 onChange={changeEventHandler}
-                className="mt-2"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="experience" className="font-medium text-gray-700">
-                Experience (Years)
-              </Label>
+              <Label htmlFor="experience">Experience (Years)</Label>
               <Input
                 id="experience"
-                type="number"
                 name="experience"
-                value={input.experience}
-                placeholder="Enter years of experience"
-                onChange={changeEventHandler}
+                type="number"
                 min={0}
-                className="mt-2"
+                placeholder="e.g. 2"
+                value={input.experience}
+                onChange={changeEventHandler}
+                className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="jobType" className="font-medium text-gray-700">
-                Job Type
-              </Label>
+              <Label htmlFor="jobType">Job Type</Label>
               <Input
                 id="jobType"
-                type="text"
                 name="jobType"
+                placeholder="Full-time, Part-time"
                 value={input.jobType}
-                placeholder="Full-time, Part-time, etc."
                 onChange={changeEventHandler}
-                className="mt-2"
+                className="mt-1"
               />
             </div>
 
             <div className="md:col-span-2">
-              <Label className="font-medium text-gray-700 mb-1">
-                Select Company
-              </Label>
+              <Label>Select Company</Label>
               {companies.length > 0 ? (
                 <Select onValueChange={selectChangeHandler}>
-                  <SelectTrigger className="w-full max-w-xs border border-gray-300 rounded-md shadow-sm hover:border-indigo-500 focus:ring-indigo-500 focus:ring-2">
-                    <SelectValue placeholder="Select a Company" />
+                  <SelectTrigger className="w-full mt-1 border border-gray-300 rounded-md shadow-sm">
+                    <SelectValue placeholder="Choose a company" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -237,30 +211,28 @@ const PostJob = () => {
                   </SelectContent>
                 </Select>
               ) : (
-                <p className="text-red-600 font-semibold mt-2">
-                  *Please register a company to post jobs.*
+                <p className="text-sm text-red-600 mt-2">
+                  *No companies available. Please register one first.*
                 </p>
               )}
             </div>
           </div>
 
-          <div className="mt-10">
-            {loading ? (
-              <Button
-                disabled
-                className="w-full flex justify-center items-center gap-2 py-3 bg-gray-700 text-white rounded-md cursor-not-allowed"
-              >
-                <Loader2 className="animate-spin" size={20} />
-                Posting...
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition"
-              >
-                Post Job
-              </Button>
-            )}
+          <div>
+            <Button
+              type="submit"
+              className="w-full flex justify-center items-center gap-2 py-3 text-white bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-md transition"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                "Post Job"
+              )}
+            </Button>
           </div>
         </form>
       </div>

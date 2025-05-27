@@ -8,47 +8,48 @@ import Navbar from "../components_lite/Navbar";
 import { setAllApplicants } from "@/redux/applicationSlice";
 
 const Applicants = () => {
-  const params = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { applicants } = useSelector((store) => store.application);
 
   useEffect(() => {
     const fetchAllApplicants = async () => {
+      if (!id) return;
       try {
-        const res = await axios.get(
-          `${APPLICATION_API_ENDPOINT}/${params.id}/applicants`,
-          { withCredentials: true }
-        );
+        const res = await axios.get(`${APPLICATION_API_ENDPOINT}/${id}/applicants`, {
+          withCredentials: true,
+        });
         dispatch(setAllApplicants(res.data.job));
-        console.log(res.data);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching applicants:", error.message);
       }
     };
     fetchAllApplicants();
-  }, [params.id, dispatch]);
+  }, [id, dispatch]);
+
+  const applicantCount = applicants?.applications?.length || 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-blue-700">
-            Applicants Overview
-          </h1>
-          <p className="text-gray-600 mt-1">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <section className="mb-8">
+          <h1 className="text-3xl font-bold text-blue-700">Applicants Overview</h1>
+          <p className="text-gray-600 mt-2">
             Total Applicants:{" "}
-            <span className="font-semibold text-gray-800">
-              {applicants?.applications?.length || 0}
-            </span>
+            <span className="font-semibold text-gray-800">{applicantCount}</span>
           </p>
-        </div>
+        </section>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <ApplicantsTable />
-        </div>
-      </div>
+        <section className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          {applicantCount === 0 ? (
+            <p className="text-center text-gray-500 italic">No applicants found.</p>
+          ) : (
+            <ApplicantsTable />
+          )}
+        </section>
+      </main>
     </div>
   );
 };

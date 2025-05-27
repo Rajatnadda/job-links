@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
+import Footer from "../components_lite/Footer";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -134,6 +135,9 @@ const Login = () => {
             </Link>
           </p>
         </form>
+        <div>
+          <Footer />
+        </div>
       </div>
     </div>
   );

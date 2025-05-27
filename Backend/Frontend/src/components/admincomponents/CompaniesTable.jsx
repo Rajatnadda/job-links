@@ -15,71 +15,49 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const CompaniesTable = () => {
-  const { companies, searchCompanyByText } = useSelector(
-    (store) => store.company
-  );
+  const { companies = [], searchCompanyByText } = useSelector((store) => store.company);
   const navigate = useNavigate();
-  const [filterCompany, setFilterCompany] = useState(companies);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
 
   useEffect(() => {
-    const filteredCompany =
-      companies.length >= 0 &&
-      companies.filter((company) => {
-        if (!searchCompanyByText) {
-          return true;
-        }
-        return company.name
-          ?.toLowerCase()
-          .includes(searchCompanyByText.toLowerCase());
-      });
-    setFilterCompany(filteredCompany);
+    const result = companies.filter((company) =>
+      searchCompanyByText
+        ? company.name.toLowerCase().includes(searchCompanyByText.toLowerCase())
+        : true
+    );
+    setFilteredCompanies(result);
   }, [companies, searchCompanyByText]);
 
-  if (!companies) {
-    return <div className="text-center py-10 text-gray-500">Loading...</div>;
-  }
-
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm bg-white">
-      <Table className="min-w-full">
-        <TableCaption className="text-gray-500 text-sm py-4">
-          Your recent registered companies
+    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-md">
+      <Table className="min-w-full text-sm text-gray-700">
+        <TableCaption className="py-4 text-gray-500 italic">
+          Your recently registered companies
         </TableCaption>
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead className="px-4 py-3 text-left text-gray-700 font-semibold text-sm border-b border-gray-300">
-              Logo
-            </TableHead>
-            <TableHead className="px-4 py-3 text-left text-gray-700 font-semibold text-sm border-b border-gray-300">
-              Company Name
-            </TableHead>
-            <TableHead className="px-4 py-3 text-left text-gray-700 font-semibold text-sm border-b border-gray-300">
-              Date
-            </TableHead>
-            <TableHead className="px-4 py-3 text-right text-gray-700 font-semibold text-sm border-b border-gray-300">
-              Action
-            </TableHead>
+            <TableHead className="px-5 py-3">Logo</TableHead>
+            <TableHead className="px-5 py-3">Company Name</TableHead>
+            <TableHead className="px-5 py-3">Date</TableHead>
+            <TableHead className="px-5 py-3 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {filterCompany.length === 0 ? (
+          {filteredCompanies.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={4}
-                className="text-center py-6 text-gray-500 italic"
-              >
-                No companies added
+              <TableCell colSpan={4} className="py-6 text-center text-gray-500">
+                No companies found
               </TableCell>
             </TableRow>
           ) : (
-            filterCompany.map((company) => (
+            filteredCompanies.map((company) => (
               <TableRow
                 key={company._id}
-                className="hover:bg-gray-50 transition-colors duration-150"
+                className="transition-colors hover:bg-gray-50"
               >
-                <TableCell className="px-4 py-3 border-b border-gray-200">
-                  <Avatar className="h-10 w-10">
+                <TableCell className="px-5 py-3">
+                  <Avatar className="h-10 w-10 border border-gray-200 shadow-sm">
                     <AvatarImage
                       src={company.logo || "/default-logo.png"}
                       alt={`${company.name} logo`}
@@ -87,31 +65,31 @@ const CompaniesTable = () => {
                     />
                   </Avatar>
                 </TableCell>
-                <TableCell className="px-4 py-3 border-b border-gray-200 text-gray-800 font-medium">
+                <TableCell className="px-5 py-3 font-semibold">
                   {company.name}
                 </TableCell>
-                <TableCell className="px-4 py-3 border-b border-gray-200 text-gray-600">
+                <TableCell className="px-5 py-3 text-gray-600">
                   {company.createdAt
                     ? new Date(company.createdAt).toLocaleDateString()
                     : "N/A"}
                 </TableCell>
-                <TableCell className="px-4 py-3 border-b border-gray-200 text-right">
+                <TableCell className="px-5 py-3 text-right">
                   <Popover>
-                    <PopoverTrigger>
+                    <PopoverTrigger asChild>
                       <button
-                        aria-label="More actions"
-                        className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+                        className="p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                        aria-label="More options"
                       >
-                        <MoreHorizontal size={20} className="text-gray-600" />
+                        <MoreHorizontal size={20} />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-36 bg-white border border-gray-300 rounded-md shadow-lg p-2">
+                    <PopoverContent className="w-36 p-2 border border-gray-200 rounded-md shadow-md bg-white">
                       <div
                         onClick={() => navigate(`/admin/companies/${company._id}`)}
-                        className="flex items-center gap-2 p-2 cursor-pointer rounded hover:bg-indigo-50 transition-colors"
+                        className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-indigo-50 text-indigo-700 font-medium transition-colors"
                       >
-                        <Edit2 className="w-4 text-indigo-600" />
-                        <span className="text-indigo-700 font-medium">Edit</span>
+                        <Edit2 className="w-4 h-4" />
+                        Edit
                       </div>
                     </PopoverContent>
                   </Popover>

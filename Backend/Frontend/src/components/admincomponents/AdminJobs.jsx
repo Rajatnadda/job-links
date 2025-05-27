@@ -9,11 +9,13 @@ import AdminJobsTable from "./AdminJobsTable";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
 
 const AdminJobs = () => {
-  useGetAllAdminJobs();
-  const navigate = useNavigate();
-  const [input, setInput] = useState("");
-  const dispatch = useDispatch();
+  useGetAllAdminJobs(); // Custom hook to fetch jobs
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [input, setInput] = useState("");
+
+  // Update search text in Redux store on input change
   useEffect(() => {
     dispatch(setSearchJobByText(input));
   }, [input, dispatch]);
@@ -22,33 +24,42 @@ const AdminJobs = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-10">
+      <main className="max-w-6xl mx-auto px-4 py-10">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-blue-700">Manage Jobs</h1>
-          <p className="text-gray-600 mt-1">View, filter, and post job listings.</p>
-        </div>
+        <header className="mb-8">
+          <h1 className="text-3xl font-extrabold text-blue-700 tracking-wide">
+            Manage Jobs
+          </h1>
+          <p className="text-gray-600 mt-2 text-lg">
+            View, filter, and post job listings.
+          </p>
+        </header>
 
-        {/* Filter + Post Job Button */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        {/* Search and Post New Job */}
+        <section className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <Input
-            className="md:w-1/2 border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 transition"
+            type="search"
+            aria-label="Search jobs by title or company"
+            className="md:w-1/2 border border-gray-300 shadow-sm rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             placeholder="Search by job title or company name..."
+            value={input}
             onChange={(e) => setInput(e.target.value)}
+            autoComplete="off"
           />
           <Button
             onClick={() => navigate("/admin/jobs/create")}
-            className="bg-blue-600 hover:bg-blue-700 transition-colors duration-200 text-white px-6 py-2 rounded-md shadow-md"
+            className="bg-blue-600 hover:bg-blue-700 transition-colors duration-200 text-white px-6 py-2 rounded-md shadow-md whitespace-nowrap"
+            aria-label="Post a new job"
           >
             + Post New Job
           </Button>
-        </div>
+        </section>
 
         {/* Jobs Table */}
-        <div className="bg-white shadow rounded-lg p-4">
+        <section className="bg-white shadow rounded-lg p-6">
           <AdminJobsTable />
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 };

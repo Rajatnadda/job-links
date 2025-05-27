@@ -37,10 +37,8 @@ const Register = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    Object.keys(input).forEach((key) => {
-      if (input[key]) {
-        formData.append(key, input[key]);
-      }
+    Object.entries(input).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
     });
 
     try {
@@ -64,131 +62,76 @@ const Register = () => {
   };
 
   useEffect(() => {
-    if (user) navigate("/");
+    if (user) {
+      navigate("/");
+    }
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
       <Navbar />
-      <div className="flex items-center justify-center px-4 py-12">
+      <div className="flex items-center justify-center px-4">
         <form
           onSubmit={submitHandler}
-          className="w-full max-w-lg bg-white shadow-lg rounded-2xl p-8 space-y-5 border border-gray-200"
+          className="w-full max-w-xl bg-white shadow-2xl rounded-2xl p-8 my-10 border border-gray-200"
         >
-          <h1 className="text-2xl font-bold text-center text-blue-700">
+          <h1 className="text-3xl font-extrabold text-center text-blue-600 mb-6">
             Create Your Account
           </h1>
 
-          <div>
-            <Label>Full Name</Label>
-            <Input
-              type="text"
-              name="fullname"
-              value={input.fullname}
-              onChange={changeEventHandler}
-              placeholder="John Doe"
-              className="mt-1"
-            />
-          </div>
+          {/* Input Fields */}
+          {[
+            { label: "Fullname", name: "fullname", type: "text", placeholder: "John Doe" },
+            { label: "Email", name: "email", type: "email", placeholder: "johndoe@gmail.com" },
+            { label: "Password", name: "password", type: "password", placeholder: "********" },
+            { label: "PAN Card Number", name: "pancard", type: "text", placeholder: "ABCDEF1234G" },
+            { label: "Adhar Card Number", name: "adharcard", type: "text", placeholder: "123456789012" },
+            { label: "Phone Number", name: "phoneNumber", type: "tel", placeholder: "+1234567890" },
+          ].map((field) => (
+            <div className="my-3" key={field.name}>
+              <Label className="text-gray-700">{field.label}</Label>
+              <Input
+                type={field.type}
+                name={field.name}
+                value={input[field.name]}
+                onChange={changeEventHandler}
+                placeholder={field.placeholder}
+                className="mt-1 focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+          ))}
 
-          <div>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              name="email"
-              value={input.email}
-              onChange={changeEventHandler}
-              placeholder="johndoe@example.com"
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label>Password</Label>
-            <Input
-              type="password"
-              name="password"
-              value={input.password}
-              onChange={changeEventHandler}
-              placeholder="••••••••"
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label>PAN Card</Label>
-            <Input
-              type="text"
-              name="pancard"
-              value={input.pancard}
-              onChange={changeEventHandler}
-              placeholder="ABCDE1234F"
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label>Aadhar Card</Label>
-            <Input
-              type="text"
-              name="adharcard"
-              value={input.adharcard}
-              onChange={changeEventHandler}
-              placeholder="123456789012"
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label>Phone Number</Label>
-            <Input
-              type="tel"
-              name="phoneNumber"
-              value={input.phoneNumber}
-              onChange={changeEventHandler}
-              placeholder="9876543210"
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="block mb-2">Role</Label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="role"
-                  value="Student"
-                  checked={input.role === "Student"}
-                  onChange={changeEventHandler}
-                  className="accent-blue-600"
-                />
-                Student
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="role"
-                  value="Recruiter"
-                  checked={input.role === "Recruiter"}
-                  onChange={changeEventHandler}
-                  className="accent-blue-600"
-                />
-                Recruiter
-              </label>
+          {/* Role Radio Buttons */}
+          <div className="my-5">
+            <Label className="text-gray-700 block mb-2">Register As</Label>
+            <div className="flex gap-6">
+              {["Student", "Recruiter"].map((role) => (
+                <label key={role} className="flex items-center space-x-2 cursor-pointer">
+                  <Input
+                    type="radio"
+                    name="role"
+                    value={role}
+                    checked={input.role === role}
+                    onChange={changeEventHandler}
+                  />
+                  <span className="text-gray-800">{role}</span>
+                </label>
+              ))}
             </div>
           </div>
 
-          <div>
-            <Label>Profile Photo</Label>
+          {/* File Upload */}
+          <div className="my-4">
+            <Label className="text-gray-700">Profile Photo</Label>
             <Input
               type="file"
               accept="image/*"
               onChange={ChangeFilehandler}
-              className="file:bg-blue-600 file:text-white file:px-4 file:py-2 file:rounded-md file:border-0 file:cursor-pointer mt-1"
+              className="mt-1 file:mr-4 file:py-2 file:px-4 file:border-0 file:rounded-full file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
             />
           </div>
 
+          {/* Submit / Loading */}
           {loading ? (
             <div className="flex justify-center my-6">
               <div className="w-8 h-8 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
@@ -196,16 +139,17 @@ const Register = () => {
           ) : (
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300"
+              className="w-full py-3 mt-6 text-white font-semibold bg-blue-600 hover:bg-blue-700 rounded-xl transition-all duration-200"
             >
               Register
             </button>
           )}
 
-          <p className="text-center text-gray-600 text-sm">
+          {/* Already have account */}
+          <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 font-medium hover:underline shadow-stone-500 hover:p-2">
-              Login here
+            <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+              Login
             </Link>
           </p>
         </form>

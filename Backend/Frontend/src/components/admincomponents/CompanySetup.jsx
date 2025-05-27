@@ -13,8 +13,9 @@ import useGetCompanyById from "@/hooks/useGetCompanyById.jsx";
 
 const CompanySetup = () => {
   const params = useParams();
-  useGetCompanyById(params.id);
+  const navigate = useNavigate();
   const { singleCompany } = useSelector((store) => store.company);
+  const [loading, setLoading] = useState(false);
 
   const [input, setInput] = useState({
     name: "",
@@ -24,8 +25,17 @@ const CompanySetup = () => {
     file: null,
   });
 
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  useGetCompanyById(params.id);
+
+  useEffect(() => {
+    setInput({
+      name: singleCompany.name || "",
+      description: singleCompany.description || "",
+      website: singleCompany.website || "",
+      location: singleCompany.location || "",
+      file: null,
+    });
+  }, [singleCompany]);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -46,6 +56,7 @@ const CompanySetup = () => {
     if (input.file) {
       formData.append("file", input.file);
     }
+
     try {
       setLoading(true);
       const res = await axios.put(
@@ -74,36 +85,30 @@ const CompanySetup = () => {
     }
   };
 
-  useEffect(() => {
-    setInput({
-      name: singleCompany.name || "",
-      description: singleCompany.description || "",
-      website: singleCompany.website || "",
-      location: singleCompany.location || "",
-      file: null, // reset file input for new upload
-    });
-  }, [singleCompany]);
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-purple-50">
       <Navbar />
-      <main className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-10 mt-10">
+      <main className="max-w-3xl mx-auto bg-white shadow-2xl rounded-2xl p-10 mt-12 border border-gray-200">
         <div className="flex items-center gap-4 mb-8">
           <Button
             onClick={() => navigate("/admin/companies")}
             variant="outline"
-            className="flex items-center gap-2 text-gray-600 font-semibold hover:text-gray-900 hover:border-gray-900 transition"
+            className="flex items-center gap-2 text-gray-600 font-medium hover:text-black hover:border-gray-800 transition"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
             <span>Back</span>
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900">Company Setup</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Company Setup</h1>
         </div>
 
-        <form onSubmit={submitHandler} className="space-y-6">
+        <form
+          onSubmit={submitHandler}
+          className="space-y-8"
+          encType="multipart/form-data"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label htmlFor="name" className="font-semibold text-gray-700">
+              <Label htmlFor="name" className="text-gray-700 font-semibold">
                 Company Name
               </Label>
               <Input
@@ -119,7 +124,7 @@ const CompanySetup = () => {
             </div>
 
             <div>
-              <Label htmlFor="description" className="font-semibold text-gray-700">
+              <Label htmlFor="description" className="text-gray-700 font-semibold">
                 Description
               </Label>
               <Input
@@ -134,7 +139,7 @@ const CompanySetup = () => {
             </div>
 
             <div>
-              <Label htmlFor="website" className="font-semibold text-gray-700">
+              <Label htmlFor="website" className="text-gray-700 font-semibold">
                 Website
               </Label>
               <Input
@@ -149,7 +154,7 @@ const CompanySetup = () => {
             </div>
 
             <div>
-              <Label htmlFor="location" className="font-semibold text-gray-700">
+              <Label htmlFor="location" className="text-gray-700 font-semibold">
                 Location
               </Label>
               <Input
@@ -164,7 +169,7 @@ const CompanySetup = () => {
             </div>
 
             <div className="md:col-span-2">
-              <Label htmlFor="file" className="font-semibold text-gray-700">
+              <Label htmlFor="file" className="text-gray-700 font-semibold">
                 Company Logo
               </Label>
               <Input
@@ -185,15 +190,16 @@ const CompanySetup = () => {
 
           <Button
             type="submit"
-            className="w-full py-3 mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
+            className="w-full py-3 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
             disabled={loading}
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin" size={20} /> Updating...
+                <Loader2 className="animate-spin" size={20} />
+                Updating...
               </span>
             ) : (
-              "Update"
+              "Update Company Info"
             )}
           </Button>
         </form>
