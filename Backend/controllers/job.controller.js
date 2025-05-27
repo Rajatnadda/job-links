@@ -1,5 +1,7 @@
 import { Job } from "../models/job.model.js";
-//Admin job posting
+import { Company } from "../models/company.model.js"; // Import Company for validation
+
+// Admin job posting
 export const postJob = async (req, res) => {
   try {
     const {
@@ -13,7 +15,11 @@ export const postJob = async (req, res) => {
       position,
       companyId,
     } = req.body;
+
     const userId = req.id;
+
+    console.log("postJob - userId:", userId);
+    console.log("postJob - request body:", req.body);
 
     if (
       !title ||
@@ -31,10 +37,25 @@ export const postJob = async (req, res) => {
         success: false,
       });
     }
+
+    // Validate company exists
+    const companyExists = await Company.findById(companyId);
+    if (!companyExists) {
+      return res.status(400).json({
+        message: "Invalid company ID",
+        success: false,
+      });
+    }
+
+    // Ensure requirements is an array
+    const requirementsArray = typeof requirements === "string" 
+      ? requirements.split(",").map(req => req.trim()) 
+      : [];
+
     const job = await Job.create({
       title,
       description,
-      requirements: requirements.split(","),
+      requirements: requirementsArray,
       salary: Number(salary),
       location,
       jobType,
@@ -43,18 +64,19 @@ export const postJob = async (req, res) => {
       company: companyId,
       created_by: userId,
     });
-    res.status(201).json({
+
+    return res.status(201).json({
       message: "Job posted successfully.",
       job,
       status: true,
     });
   } catch (error) {
-    console.error(error);
+    console.error("postJob error:", error);
     return res.status(500).json({ message: "Server Error", status: false });
   }
 };
 
-//Users
+// Users - get all jobs
 export const getAllJobs = async (req, res) => {
   try {
     const keyword = req.query.keyword || "";
@@ -65,12 +87,10 @@ export const getAllJobs = async (req, res) => {
       ],
     };
     const jobs = await Job.find(query)
-      .populate({
-        path: "company",
-      })
+      .populate({ path: "company" })
       .sort({ createdAt: -1 });
 
-    if (!jobs) {
+    if (!jobs || jobs.length === 0) {
       return res.status(404).json({ message: "No jobs found", status: false });
     }
     return res.status(200).json({ jobs, status: true });
@@ -80,7 +100,7 @@ export const getAllJobs = async (req, res) => {
   }
 };
 
-//Users
+// Users - get job by ID
 export const getJobById = async (req, res) => {
   try {
     const jobId = req.params.id;
@@ -97,16 +117,15 @@ export const getJobById = async (req, res) => {
   }
 };
 
-//Admin job created
-
+// Admin jobs posted by this admin
 export const getAdminJobs = async (req, res) => {
   try {
     const adminId = req.id;
-    const jobs = await Job.find({ created_by: adminId }).populate({
-      path: "company",
-      sort: { createdAt: -1 },
-    });
-    if (!jobs) {
+    const jobs = await Job.find({ created_by: adminId })
+      .populate({ path: "company" })
+      .sort({ createdAt: -1 });
+
+    if (!jobs || jobs.length === 0) {
       return res.status(404).json({ message: "No jobs found", status: false });
     }
     return res.status(200).json({ jobs, status: true });
