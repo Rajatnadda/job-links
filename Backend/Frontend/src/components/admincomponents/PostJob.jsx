@@ -7,11 +7,17 @@ import { Loader2 } from "lucide-react";
 
 import Navbar from "../components_lite/Navbar";
 import { JOB_API_ENDPOINT } from "@/utils/data";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
- 
 
 const PostJob = () => {
   const [input, setInput] = useState({
@@ -51,18 +57,21 @@ const PostJob = () => {
       return;
     }
 
+    // Prepare payload matching backend schema exactly
     const preparedInput = {
-      ...input,
-      company: input.companyId,
-      position: Number(input.position),
-      experience: Number(input.experience),
+      title: input.title,
+      description: input.description,
       requirements: input.requirements
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean),
+      salary: input.salary, // Must be string as per schema
+      location: input.location,
+      jobType: input.jobType,
+      experience: Number(input.experience), // Number type
+      position: Number(input.position),     // Number type
+      company: input.companyId,             // ObjectId string
     };
-
-    delete preparedInput.companyId;
 
     try {
       setLoading(true);
@@ -131,8 +140,9 @@ const PostJob = () => {
               name="salary"
               value={input.salary}
               onChange={changeEventHandler}
-              type="number"
+              type="text" // Keep string type for salary
               placeholder="70000"
+              required
             />
             <InputField
               label="Positions"
@@ -142,6 +152,7 @@ const PostJob = () => {
               onChange={changeEventHandler}
               type="number"
               placeholder="1"
+              required
             />
             <InputField
               label="Requirements"
@@ -150,6 +161,7 @@ const PostJob = () => {
               value={input.requirements}
               onChange={changeEventHandler}
               placeholder="e.g. React, Node.js"
+              required
             />
             <InputField
               label="Experience (Years)"
@@ -159,6 +171,7 @@ const PostJob = () => {
               onChange={changeEventHandler}
               type="number"
               placeholder="2"
+              required
             />
             <InputField
               label="Job Type"
@@ -167,6 +180,7 @@ const PostJob = () => {
               value={input.jobType}
               onChange={changeEventHandler}
               placeholder="Full-time, Part-time"
+              required
             />
 
             <div className="md:col-span-2">

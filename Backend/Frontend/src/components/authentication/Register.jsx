@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 import LoginNavbar from "../components_lite/LoginNavbar";
+import Footer from "../components_lite/Footer";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -157,7 +158,9 @@ const Register = () => {
           </form>
         </div> 
       </div>
-             
+             <div>
+              <Footer />
+             </div>
 
     </div>
   );

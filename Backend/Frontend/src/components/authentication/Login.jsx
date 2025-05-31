@@ -8,6 +8,7 @@ import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
 import LoginNavbar from "../components_lite/LoginNavbar";
+import Footer from "../components_lite/Footer";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -135,7 +136,9 @@ const Login = () => {
 
         
       </div>
-      
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };

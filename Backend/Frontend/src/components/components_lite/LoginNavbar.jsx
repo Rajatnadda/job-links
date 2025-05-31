@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Footer from "./Footer";
 
 const LoginNavbar = () => {
   return (
@@ -41,7 +40,7 @@ const LoginNavbar = () => {
       {/* Flex-grow to push footer to bottom */}
       <main className="flex-grow" />
 
-      <Footer />
+      
     </div>
   );
 };
