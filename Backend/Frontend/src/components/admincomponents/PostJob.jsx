@@ -7,17 +7,11 @@ import { Loader2 } from "lucide-react";
 
 import Navbar from "../components_lite/Navbar";
 import { JOB_API_ENDPOINT } from "@/utils/data";
-import {
-  Label,
-  Input,
-  Button,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+ 
 
 const PostJob = () => {
   const [input, setInput] = useState({
