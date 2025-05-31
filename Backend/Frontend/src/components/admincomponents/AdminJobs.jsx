@@ -9,13 +9,12 @@ import AdminJobsTable from "./AdminJobsTable";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
 
 const AdminJobs = () => {
-  useGetAllAdminJobs(); // Custom hook to fetch jobs
+  useGetAllAdminJobs(); 
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
 
-  // Update search text in Redux store on input change
   useEffect(() => {
     dispatch(setSearchJobByText(input));
   }, [input, dispatch]);
@@ -25,7 +24,7 @@ const AdminJobs = () => {
       <Navbar />
 
       <main className="max-w-6xl mx-auto px-4 py-10">
-        {/* Page Header */}
+        
         <header className="mb-8">
           <h1 className="text-3xl font-extrabold text-blue-700 tracking-wide">
             Manage Jobs

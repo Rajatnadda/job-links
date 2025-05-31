@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
-import Footer from "../components_lite/Footer";
 import LoginNavbar from "../components_lite/LoginNavbar";
 
 const Login = () => {
@@ -136,7 +135,7 @@ const Login = () => {
 
         
       </div>
-      <div><Footer /></div>
+      
     </div>
   );
 };
