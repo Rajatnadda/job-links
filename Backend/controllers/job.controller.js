@@ -1,5 +1,6 @@
 import { Job } from "../models/job.model.js";
-//Admin job posting
+
+// Admin job posting
 export const postJob = async (req, res) => {
   try {
     const {
@@ -11,8 +12,9 @@ export const postJob = async (req, res) => {
       jobType,
       experience,
       position,
-      companyId,
+      companyId,  // make sure frontend sends "companyId"
     } = req.body;
+
     const userId = req.id;
 
     if (
@@ -22,39 +24,48 @@ export const postJob = async (req, res) => {
       !salary ||
       !location ||
       !jobType ||
-      !experience ||
-      !position ||
+      experience === undefined ||
+      position === undefined ||
       !companyId
     ) {
       return res.status(400).json({
-        message: "All fields are required",
         success: false,
+        message: "All fields are required.",
       });
     }
+
+    const reqs = Array.isArray(requirements)
+      ? requirements
+      : requirements.split(",").map((item) => item.trim()).filter(Boolean);
+
     const job = await Job.create({
       title,
       description,
-      requirements: requirements.split(","),
+      requirements: reqs,
       salary: Number(salary),
       location,
       jobType,
-      experienceLevel: experience,
-      position,
+      experienceLevel: Number(experience),
+      position: Number(position),
       company: companyId,
       created_by: userId,
     });
-    res.status(201).json({
+
+    return res.status(201).json({
+      success: true,
       message: "Job posted successfully.",
       job,
-      status: true,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    console.error("Error posting job:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+    });
   }
 };
 
-//Users
+// Get all jobs with optional keyword filter
 export const getAllJobs = async (req, res) => {
   try {
     const keyword = req.query.keyword || "";
@@ -65,53 +76,48 @@ export const getAllJobs = async (req, res) => {
       ],
     };
     const jobs = await Job.find(query)
-      .populate({
-        path: "company",
-      })
+      .populate("company")
       .sort({ createdAt: -1 });
 
-    if (!jobs) {
-      return res.status(404).json({ message: "No jobs found", status: false });
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({ message: "No jobs found", success: false });
     }
-    return res.status(200).json({ jobs, status: true });
+    return res.status(200).json({ jobs, success: true });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    console.error("Error fetching jobs:", error.message);
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
-//Users
+// Get job by ID
 export const getJobById = async (req, res) => {
   try {
-    const jobId = req.params.id;
-    const job = await Job.findById(jobId).populate({
-      path: "applications",
-    });
+    const jobId = req.params.id.trim();
+    const job = await Job.findById(jobId).populate("applications");
     if (!job) {
-      return res.status(404).json({ message: "Job not found", status: false });
+      return res.status(404).json({ message: "Job not found", success: false });
     }
-    return res.status(200).json({ job, status: true });
+    return res.status(200).json({ job, success: true });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    console.error("Error fetching job by ID:", error.message);
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
-//Admin job created
-
+// Get jobs posted by admin user
 export const getAdminJobs = async (req, res) => {
   try {
     const adminId = req.id;
-    const jobs = await Job.find({ created_by: adminId }).populate({
-      path: "company",
-      sort: { createdAt: -1 },
-    });
-    if (!jobs) {
-      return res.status(404).json({ message: "No jobs found", status: false });
+    const jobs = await Job.find({ created_by: adminId })
+      .populate("company")
+      .sort({ createdAt: -1 });
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({ message: "No jobs found", success: false });
     }
-    return res.status(200).json({ jobs, status: true });
+    return res.status(200).json({ jobs, success: true });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    console.error("Error fetching admin jobs:", error.message);
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
