@@ -1,6 +1,8 @@
 import { Job } from "../models/job.model.js";
 
-// Admin job posting
+// @desc    Post a new job (Admin only)
+// @route   POST /api/job/post
+// @access  Private
 export const postJob = async (req, res) => {
   try {
     const {
@@ -29,14 +31,17 @@ export const postJob = async (req, res) => {
       !company
     ) {
       return res.status(400).json({
-        message: "All fields are required",
         success: false,
+        message: "All fields are required.",
       });
     }
 
     const reqs = Array.isArray(requirements)
       ? requirements
-      : requirements.split(",").map((item) => item.trim()).filter(Boolean);
+      : requirements
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
 
     const job = await Job.create({
       title,
@@ -51,13 +56,40 @@ export const postJob = async (req, res) => {
       created_by: userId,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
+      success: true,
       message: "Job posted successfully.",
       job,
-      success: true,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", success: false });
+    console.error("Error posting job:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+    });
   }
 };
+
+// @desc    Get all jobs posted by the current admin
+// @route   GET /api/job/getAdminJobs
+// @access  Private
+export const getAdminJobs = async (req, res) => {
+  try {
+    const userId = req.id;
+
+    const jobs = await Job.find({ created_by: userId });
+
+    return res.status(200).json({
+      success: true,
+      jobs,
+    });
+  } catch (error) {
+    console.error("Error fetching admin jobs:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching admin jobs",
+    });
+  }
+};
+
+// You can also export other functions here as needed (e.g. getAllJobs, getJobById)

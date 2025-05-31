@@ -9,8 +9,7 @@ import AdminJobsTable from "./AdminJobsTable";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
 
 const AdminJobs = () => {
-  useGetAllAdminJobs(); 
-
+  useGetAllAdminJobs();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
@@ -20,42 +19,42 @@ const AdminJobs = () => {
   }, [input, dispatch]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-4 py-10">
-        
-        <header className="mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-700 tracking-wide">
-            Manage Jobs
+      <main className="max-w-7xl mx-auto px-6 py-12">
+        {/* Page Heading */}
+        <header className="mb-10">
+          <h1 className="text-4xl font-bold text-blue-700 tracking-tight">
+            Job Management Dashboard
           </h1>
-          <p className="text-gray-600 mt-2 text-lg">
-            View, filter, and post job listings.
+          <p className="mt-2 text-lg text-gray-600">
+            Review, search, and manage your company’s job postings.
           </p>
         </header>
 
-        {/* Search and Post New Job */}
+        {/* Search and Button */}
         <section className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <Input
             type="search"
             aria-label="Search jobs by title or company"
-            className="md:w-1/2 border border-gray-300 shadow-sm rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            placeholder="Search by job title or company name..."
+            className="w-full md:w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            placeholder="Search by job title or company..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             autoComplete="off"
           />
           <Button
             onClick={() => navigate("/admin/jobs/create")}
-            className="bg-blue-600 hover:bg-blue-700 transition-colors duration-200 text-white px-6 py-2 rounded-md shadow-md whitespace-nowrap"
+            className="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-md shadow whitespace-nowrap"
             aria-label="Post a new job"
           >
             + Post New Job
           </Button>
         </section>
 
-        {/* Jobs Table */}
-        <section className="bg-white shadow rounded-lg p-6">
+        {/* Job Listings Table */}
+        <section className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
           <AdminJobsTable />
         </section>
       </main>
