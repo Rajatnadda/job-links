@@ -18,57 +18,65 @@ const Home = () => {
     if (user?.role === "Recruiter") {
       navigate("/admin/companies");
     }
-  }, []);
+  }, [user, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-violet-200 to-violet-300 text-gray-900">
+    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans">
       <Navbar />
 
-      <section className="relative overflow-hidden bg-violet-600 text-white py-20 shadow-lg">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-700 via-violet-600 to-violet-500 opacity-80"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
-            Find Your <span className="text-yellow-300">Dream Job</span> Today
+      {/* Hero Section */}
+      <section className="relative bg-white py-24 shadow-md">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <h1 className="text-5xl font-extrabold leading-tight mb-6 text-gray-900">
+            Find Your <span className="text-indigo-600">Dream Job</span> Today
           </h1>
-          <p className="text-lg md:text-xl mb-8 text-violet-100">
-            Explore the latest opportunities in tech, design, marketing, and more.
+          <p className="max-w-3xl mx-auto text-lg text-gray-600 mb-10">
+            Discover the latest opportunities across technology, design, marketing, and more. 
+            Take your career to the next level with our curated listings.
           </p>
           <a
             href="#jobs"
-            className="inline-block px-6 py-3 bg-yellow-400 text-black font-medium rounded-lg hover:bg-yellow-300 transition"
+            className="inline-block px-8 py-3 bg-indigo-600 text-white text-lg font-medium rounded-md shadow hover:bg-indigo-700 transition duration-300"
+            aria-label="Browse Jobs"
           >
             Browse Jobs
           </a>
         </div>
       </section>
 
-      <section className="py-12">
+      {/* Categories Section */}
+      <section className="py-16 bg-gray-100">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-2xl font-semibold text-center mb-8 text-violet-800">
+          <h2 className="text-3xl font-semibold text-center text-gray-900 mb-12">
             Explore Job Categories
           </h2>
           <Categories />
         </div>
       </section>
 
-      <section id="jobs" className="py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-2xl font-semibold text-center mb-8 text-violet-800">
-            Latest Job Listings
-          </h2>
-          {loading && (
-            <div className="flex justify-center items-center py-8">
-              <div className="w-10 h-10 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="ml-4 text-violet-700">Loading jobs...</p>
-            </div>
-          )}
-          {error && (
-            <div className="text-center text-red-600 font-medium">
-              Error: {error}
-            </div>
-          )}
-          {!loading && !error && <LatestJobs jobs={jobs} />}
-        </div>
+      {/* Latest Jobs Section */}
+      <section
+        id="jobs"
+        className="py-16 max-w-6xl mx-auto px-6 bg-white rounded-lg shadow-md"
+      >
+        <h2 className="text-3xl font-semibold text-center text-gray-900 mb-12">
+          Latest Job Listings
+        </h2>
+
+        {loading && (
+          <div className="flex justify-center items-center space-x-4 py-12">
+            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-indigo-700 text-lg font-medium">Loading jobs...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center text-red-600 font-semibold text-lg">
+            Error: {error}
+          </div>
+        )}
+
+        {!loading && !error && <LatestJobs jobs={jobs} />}
       </section>
 
       <Footer />
