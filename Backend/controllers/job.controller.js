@@ -13,7 +13,7 @@ export const postJob = async (req, res) => {
       experience,
       position,
       company,
-    } = req.body; // note key 'company' here
+    } = req.body;
 
     const userId = req.id;
 
@@ -34,7 +34,6 @@ export const postJob = async (req, res) => {
       });
     }
 
-    // Handle requirements array or string
     const reqs = Array.isArray(requirements)
       ? requirements
       : requirements.split(",").map((item) => item.trim()).filter(Boolean);
@@ -46,9 +45,9 @@ export const postJob = async (req, res) => {
       salary: Number(salary),
       location,
       jobType,
-      experienceLevel: Number(experience), // DB field name
+      experienceLevel: Number(experience),
       position: Number(position),
-      company,                              // DB expects 'company'
+      company,
       created_by: userId,
     });
 
@@ -63,4 +62,46 @@ export const postJob = async (req, res) => {
   }
 };
 
-// (Other controller functions unchanged)
+// Get jobs posted by admins/recruiters
+export const getAdminJobs = async (req, res) => {
+  try {
+    // Example: fetch all jobs posted by the current user (assumed recruiter/admin)
+    const userId = req.id;
+
+    const adminJobs = await Job.find({ created_by: userId });
+
+    res.status(200).json({
+      success: true,
+      jobs: adminJobs,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+// Placeholder for getting all jobs
+export const getAllJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({});
+    res.status(200).json({ success: true, jobs });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+// Placeholder for getting a job by ID
+export const getJobById = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job not found" });
+    }
+    res.status(200).json({ success: true, job });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
