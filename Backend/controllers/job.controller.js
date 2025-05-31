@@ -1,8 +1,5 @@
 import { Job } from "../models/job.model.js";
-
-// @desc    Post a new job (Admin only)
-// @route   POST /api/job/post
-// @access  Private
+//Admin job posting
 export const postJob = async (req, res) => {
   try {
     const {
@@ -14,9 +11,8 @@ export const postJob = async (req, res) => {
       jobType,
       experience,
       position,
-      company,
+      companyId,
     } = req.body;
-
     const userId = req.id;
 
     if (
@@ -26,70 +22,96 @@ export const postJob = async (req, res) => {
       !salary ||
       !location ||
       !jobType ||
-      experience === undefined ||
-      position === undefined ||
-      !company
+      !experience ||
+      !position ||
+      !companyId
     ) {
       return res.status(400).json({
+        message: "All fields are required",
         success: false,
-        message: "All fields are required.",
       });
     }
-
-    const reqs = Array.isArray(requirements)
-      ? requirements
-      : requirements
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean);
-
     const job = await Job.create({
       title,
       description,
-      requirements: reqs,
+      requirements: requirements.split(","),
       salary: Number(salary),
       location,
       jobType,
-      experienceLevel: Number(experience),
-      position: Number(position),
-      company,
+      experienceLevel: experience,
+      position,
+      company: companyId,
       created_by: userId,
     });
-
-    return res.status(201).json({
-      success: true,
+    res.status(201).json({
       message: "Job posted successfully.",
       job,
+      status: true,
     });
   } catch (error) {
-    console.error("Error posting job:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Server error. Please try again later.",
-    });
+    console.error(error);
+    return res.status(500).json({ message: "Server Error", status: false });
   }
 };
 
-// @desc    Get all jobs posted by the current admin
-// @route   GET /api/job/getAdminJobs
-// @access  Private
+//Users
+export const getAllJobs = async (req, res) => {
+  try {
+    const keyword = req.query.keyword || "";
+    const query = {
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+      ],
+    };
+    const jobs = await Job.find(query)
+      .populate({
+        path: "company",
+      })
+      .sort({ createdAt: -1 });
+
+    if (!jobs) {
+      return res.status(404).json({ message: "No jobs found", status: false });
+    }
+    return res.status(200).json({ jobs, status: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error", status: false });
+  }
+};
+
+//Users
+export const getJobById = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const job = await Job.findById(jobId).populate({
+      path: "applications",
+    });
+    if (!job) {
+      return res.status(404).json({ message: "Job not found", status: false });
+    }
+    return res.status(200).json({ job, status: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error", status: false });
+  }
+};
+
+//Admin job created
+
 export const getAdminJobs = async (req, res) => {
   try {
-    const userId = req.id;
-
-    const jobs = await Job.find({ created_by: userId });
-
-    return res.status(200).json({
-      success: true,
-      jobs,
+    const adminId = req.id;
+    const jobs = await Job.find({ created_by: adminId }).populate({
+      path: "company",
+      sort: { createdAt: -1 },
     });
+    if (!jobs) {
+      return res.status(404).json({ message: "No jobs found", status: false });
+    }
+    return res.status(200).json({ jobs, status: true });
   } catch (error) {
-    console.error("Error fetching admin jobs:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while fetching admin jobs",
-    });
+    console.error(error);
+    return res.status(500).json({ message: "Server Error", status: false });
   }
 };
-
-// You can also export other functions here as needed (e.g. getAllJobs, getJobById)
