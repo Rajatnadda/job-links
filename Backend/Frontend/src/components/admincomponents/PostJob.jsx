@@ -1,22 +1,23 @@
 import React, { useState } from "react";
-import Navbar from "../components_lite/Navbar";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
+import Navbar from "../components_lite/Navbar";
+import { JOB_API_ENDPOINT } from "@/utils/data";
 import {
+  Label,
+  Input,
+  Button,
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import axios from "axios";
-import { JOB_API_ENDPOINT } from "@/utils/data";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+} from "../ui";
 
 const PostJob = () => {
   const [input, setInput] = useState({
@@ -27,13 +28,13 @@ const PostJob = () => {
     location: "",
     jobType: "",
     experience: "",
-    position: 0,
+    position: "",
     companyId: "",
   });
 
-  const navigate = useNavigate();
   const { companies } = useSelector((store) => store.company);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -50,12 +51,29 @@ const PostJob = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!input.companyId) {
+      toast.error("Please select a company");
+      return;
+    }
+
+    const preparedInput = {
+      ...input,
+      company: input.companyId,
+      position: Number(input.position),
+      experience: Number(input.experience),
+      requirements: input.requirements
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
+    };
+
+    delete preparedInput.companyId;
+
     try {
       setLoading(true);
-      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, input, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
 
@@ -63,17 +81,18 @@ const PostJob = () => {
         toast.success(res.data.message);
         navigate("/admin/jobs");
       } else {
-        toast.error(res.data.message || "Failed to post job");
+        toast.error(res.data.message || "Job post failed");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.error("Job post error:", error);
+      toast.error(error?.response?.data?.message || "Server error occurred");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
       <Navbar />
       <div className="flex justify-center py-10 px-4">
         <form
@@ -85,110 +104,76 @@ const PostJob = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label htmlFor="title">Job Title</Label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="Software Engineer"
-                value={input.title}
-                onChange={changeEventHandler}
-                required
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="description">Job Description</Label>
-              <Input
-                id="description"
-                name="description"
-                placeholder="Job summary or responsibilities"
-                value={input.description}
-                onChange={changeEventHandler}
-                required
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                name="location"
-                placeholder="e.g. New York, Remote"
-                value={input.location}
-                onChange={changeEventHandler}
-                required
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="salary">Salary</Label>
-              <Input
-                id="salary"
-                name="salary"
-                type="number"
-                min={0}
-                placeholder="e.g. 70000"
-                value={input.salary}
-                onChange={changeEventHandler}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="position">Number of Positions</Label>
-              <Input
-                id="position"
-                name="position"
-                type="number"
-                min={1}
-                placeholder="e.g. 3"
-                value={input.position}
-                onChange={changeEventHandler}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="requirements">Requirements</Label>
-              <Input
-                id="requirements"
-                name="requirements"
-                placeholder="e.g. React, Node.js"
-                value={input.requirements}
-                onChange={changeEventHandler}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="experience">Experience (Years)</Label>
-              <Input
-                id="experience"
-                name="experience"
-                type="number"
-                min={0}
-                placeholder="e.g. 2"
-                value={input.experience}
-                onChange={changeEventHandler}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="jobType">Job Type</Label>
-              <Input
-                id="jobType"
-                name="jobType"
-                placeholder="Full-time, Part-time"
-                value={input.jobType}
-                onChange={changeEventHandler}
-                className="mt-1"
-              />
-            </div>
+            <InputField
+              label="Job Title"
+              id="title"
+              name="title"
+              value={input.title}
+              onChange={changeEventHandler}
+              placeholder="Software Engineer"
+              required
+            />
+            <InputField
+              label="Description"
+              id="description"
+              name="description"
+              value={input.description}
+              onChange={changeEventHandler}
+              placeholder="Short job summary"
+              required
+            />
+            <InputField
+              label="Location"
+              id="location"
+              name="location"
+              value={input.location}
+              onChange={changeEventHandler}
+              placeholder="e.g. Remote, New York"
+              required
+            />
+            <InputField
+              label="Salary"
+              id="salary"
+              name="salary"
+              value={input.salary}
+              onChange={changeEventHandler}
+              type="number"
+              placeholder="70000"
+            />
+            <InputField
+              label="Positions"
+              id="position"
+              name="position"
+              value={input.position}
+              onChange={changeEventHandler}
+              type="number"
+              placeholder="1"
+            />
+            <InputField
+              label="Requirements"
+              id="requirements"
+              name="requirements"
+              value={input.requirements}
+              onChange={changeEventHandler}
+              placeholder="e.g. React, Node.js"
+            />
+            <InputField
+              label="Experience (Years)"
+              id="experience"
+              name="experience"
+              value={input.experience}
+              onChange={changeEventHandler}
+              type="number"
+              placeholder="2"
+            />
+            <InputField
+              label="Job Type"
+              id="jobType"
+              name="jobType"
+              value={input.jobType}
+              onChange={changeEventHandler}
+              placeholder="Full-time, Part-time"
+            />
 
             <div className="md:col-span-2">
               <Label>Select Company</Label>
@@ -239,5 +224,30 @@ const PostJob = () => {
     </div>
   );
 };
+
+const InputField = ({
+  label,
+  id,
+  name,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  required = false,
+}) => (
+  <div>
+    <Label htmlFor={id}>{label}</Label>
+    <Input
+      id={id}
+      name={name}
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      required={required}
+      className="mt-1"
+    />
+  </div>
+);
 
 export default PostJob;
