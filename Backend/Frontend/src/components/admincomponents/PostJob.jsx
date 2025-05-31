@@ -70,7 +70,7 @@ const PostJob = () => {
       jobType: input.jobType,
       experience: Number(input.experience), // number type
       position: Number(input.position),     // number type
-      company: input.company,                // key name changed here
+      companyId: input.company,                // key name changed here
     };
 
     try {
