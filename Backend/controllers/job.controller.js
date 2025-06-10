@@ -1,11 +1,8 @@
 import { Job } from "../models/job.model.js";
 
-// Admin job posting
+// POST /api/job/post
 export const postJob = async (req, res) => {
   try {
-    console.log("REQ.ID:", req.id);
-    console.log("REQ.BODY:", req.body);
-
     const {
       title,
       description,
@@ -15,27 +12,8 @@ export const postJob = async (req, res) => {
       jobType,
       experience,
       position,
-      companyId,
+      company,
     } = req.body;
-
-    const userId = req.id;
-
-    if (
-      !title ||
-      !description ||
-      !requirements ||
-      !salary ||
-      !location ||
-      !jobType ||
-      experience === undefined ||
-      position === undefined ||
-      !companyId
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required.",
-      });
-    }
 
     const reqs = Array.isArray(requirements)
       ? requirements
@@ -45,18 +23,19 @@ export const postJob = async (req, res) => {
       title,
       description,
       requirements: reqs,
-      salary: Number(salary),
+      salary,
       location,
       jobType,
-      experienceLevel: Number(experience),
+      experience: Number(experience),
       position: Number(position),
-      company: companyId,
-      created_by: userId,
+      company, // 👈 this is company ID
+      created_by: req.id, // 👈 from authenticateToken middleware
+      applications: [],
     });
 
     return res.status(201).json({
       success: true,
-      message: "Job posted successfully.",
+      message: "Job created successfully",
       job,
     });
   } catch (error) {
@@ -67,6 +46,7 @@ export const postJob = async (req, res) => {
     });
   }
 };
+
 
 
 // Get all jobs with optional keyword filter

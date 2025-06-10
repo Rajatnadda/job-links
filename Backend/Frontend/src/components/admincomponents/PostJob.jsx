@@ -53,20 +53,19 @@ const submitHandler = async (e) => {
   e.preventDefault();
 
   const preparedInput = {
-    title: input.title,
-    description: input.description,
-    requirements: input.requirements
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean),
-    salary: input.salary,
-    location: input.location,
-    jobType: input.jobType,
-    experience: Number(input.experience),
-    position: Number(input.position),
-    companyId: input.company, // <-- important
-  };
-
+  title: input.title,
+  description: input.description,
+  requirements: input.requirements
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean),
+  salary: input.salary,
+  location: input.location,
+  jobType: input.jobType,
+  experience: Number(input.experience),
+  position: Number(input.position),
+  company: input.company, // ✅ renamed from companyId to company
+};
   try {
     setLoading(true);
     const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
