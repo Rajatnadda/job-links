@@ -45,19 +45,29 @@ const PostJob = () => {
       (company) => company.name.toLowerCase() === value
     );
     if (selectedCompany) {
-      setInput({ ...input, company: selectedCompany._id }); // <-- key is now 'company'
+      setInput({ ...input, company: selectedCompany._id });
     }
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    if (!input.company) {
-      toast.error("Please select a company");
+    // Frontend validation
+    if (
+      !input.title ||
+      !input.description ||
+      !input.requirements ||
+      !input.salary ||
+      !input.location ||
+      !input.jobType ||
+      !input.experience ||
+      !input.position ||
+      !input.company
+    ) {
+      toast.error("Please fill in all fields");
       return;
     }
 
-    // Prepare payload matching backend schema keys expected
     const preparedInput = {
       title: input.title,
       description: input.description,
@@ -68,9 +78,9 @@ const PostJob = () => {
       salary: input.salary,
       location: input.location,
       jobType: input.jobType,
-      experience: Number(input.experience), // number type
-      position: Number(input.position),     // number type
-      companyId: input.company,                // key name changed here
+      experience: Number(input.experience),
+      position: Number(input.position),
+      companyId: input.company,
     };
 
     try {
@@ -107,7 +117,80 @@ const PostJob = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* ...InputField components unchanged, omitted here for brevity... */}
+            <InputField
+              label="Job Title"
+              id="title"
+              name="title"
+              value={input.title}
+              onChange={changeEventHandler}
+              placeholder="Enter job title"
+              required
+            />
+            <InputField
+              label="Description"
+              id="description"
+              name="description"
+              value={input.description}
+              onChange={changeEventHandler}
+              placeholder="Enter job description"
+              required
+            />
+            <InputField
+              label="Requirements (comma separated)"
+              id="requirements"
+              name="requirements"
+              value={input.requirements}
+              onChange={changeEventHandler}
+              placeholder="e.g. React, Node.js, MongoDB"
+              required
+            />
+            <InputField
+              label="Salary"
+              id="salary"
+              name="salary"
+              value={input.salary}
+              onChange={changeEventHandler}
+              placeholder="Enter salary"
+              required
+            />
+            <InputField
+              label="Location"
+              id="location"
+              name="location"
+              value={input.location}
+              onChange={changeEventHandler}
+              placeholder="Enter location"
+              required
+            />
+            <InputField
+              label="Job Type"
+              id="jobType"
+              name="jobType"
+              value={input.jobType}
+              onChange={changeEventHandler}
+              placeholder="e.g. Full-time"
+              required
+            />
+            <InputField
+              label="Experience (in years)"
+              id="experience"
+              name="experience"
+              value={input.experience}
+              onChange={changeEventHandler}
+              placeholder="e.g. 2"
+              required
+              type="number"
+            />
+            <InputField
+              label="Number of Positions"
+              id="position"
+              name="position"
+              value={input.position}
+              onChange={changeEventHandler}
+              placeholder="e.g. 3"
+              required
+              type="number"
+            />
 
             <div className="md:col-span-2">
               <Label>Select Company</Label>
