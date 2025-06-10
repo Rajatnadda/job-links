@@ -1,7 +1,11 @@
 import React from 'react'
+import Footer from './Footer'
+import LoginNavbar from './LoginNavbar'
 
 const Terms = () => {
   return (
+    <div>
+      <LoginNavbar/>
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', lineHeight: '1.6' }}>
       <h1>Terms and Conditions</h1>
       <p>Last updated: {new Date().toLocaleDateString()}</p>
@@ -83,6 +87,8 @@ const Terms = () => {
         }
         // You can add more specific styles here if needed
       `}</style>
+    </div>
+      <Footer/>
     </div>
   )
 }

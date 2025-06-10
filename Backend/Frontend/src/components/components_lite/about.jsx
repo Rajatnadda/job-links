@@ -1,7 +1,12 @@
 import React from 'react'
+import Footer from './Footer'
+import LoginNavbar from './LoginNavbar'
 
 const About = () => {
   return (
+    <div>
+            <LoginNavbar/>
+
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', lineHeight: '1.6', maxWidth: '900px', margin: '40px auto' }}>
       <header style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{ fontSize: '2.5em', color: '#333' }}>
@@ -98,6 +103,8 @@ const About = () => {
       <style jsx>{`
         /* You can add component-specific global styles here if needed */
       `}</style>
+    </div>
+      <Footer />
     </div>
   )
 }

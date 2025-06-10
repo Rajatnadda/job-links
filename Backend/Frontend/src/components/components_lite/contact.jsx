@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Footer from "./Footer";
+import LoginNavbar from "./LoginNavbar";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +31,10 @@ const Contact = () => {
   };
 
   return (
+    <div>
+      <LoginNavbar/>
     <div className="px-4 py-12 max-w-5xl mx-auto font-sans">
+
       <h1 className="text-3xl font-bold text-gray-900">Contact Us</h1>
       <p className="text-gray-600 mt-2">
         We'd love to hear from you! Fill out the form below or reach us via contact info.
@@ -112,6 +117,8 @@ const Contact = () => {
           </p>
         </div>
       </div>
+    </div>
+      <Footer />
     </div>
   );
 };

@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 import LoginNavbar from "../components_lite/LoginNavbar";
-import Footer from "../components_lite/Footer";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -63,105 +62,194 @@ const Register = () => {
 
   useEffect(() => {
     if (user) navigate("/");
-  }, []);
+  }, [user, navigate]);
+
+  const formFields = [
+    {
+      label: "Full Name",
+      name: "fullname",
+      type: "text",
+      placeholder: "Enter your full name",
+      icon: "👤"
+    },
+    {
+      label: "Email Address",
+      name: "email",
+      type: "email",
+      placeholder: "Enter your email",
+      icon: "📧"
+    },
+    {
+      label: "Password",
+      name: "password",
+      type: "password",
+      placeholder: "Create a strong password",
+      icon: "🔒"
+    },
+    {
+      label: "Phone Number",
+      name: "phoneNumber",
+      type: "tel",
+      placeholder: "Enter your phone number",
+      icon: "📱"
+    },
+    {
+      label: "PAN Card Number",
+      name: "pancard",
+      type: "text",
+      placeholder: "ABCDE1234F",
+      icon: "🆔"
+    },
+    {
+      label: "Aadhaar Card Number",
+      name: "adharcard",
+      type: "text",
+      placeholder: "Enter 12-digit Aadhaar number",
+      icon: "🪪"
+    },
+  ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden font-sans">
-      {/* Background Animation (no global CSS) */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-200 via-blue-100 to-pink-200 animate-[gradient_6s_ease_infinite] bg-[length:300%_300%] z-0"></div>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Navbar */}
+      <LoginNavbar />
 
-      {/* Foreground content */}
-      <div className="relative z-10">
-        <LoginNavbar />
-
-        <div className="flex items-center justify-center px-4">
-          <form
-            onSubmit={submitHandler}
-            className="w-full max-w-xl bg-white/70 backdrop-blur-lg shadow-2xl rounded-3xl p-8 my-10 border border-white/30"
-          >
-            <h1 className="text-3xl font-extrabold text-center text-blue-700 mb-6">
-              Create Your Account
+      {/* Main Content */}
+      <div className="flex-grow flex items-start justify-center px-4 py-8 pt-24 sm:pt-28">
+        <div className="w-full max-w-2xl">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-3">
+              <span className="text-lg text-white">🚀</span>
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              Join Our Platform
             </h1>
+            <p className="text-gray-600">Create your account and start your journey</p>
+          </div>
 
-            {[
-              { label: "Fullname", name: "fullname", type: "text", placeholder: "John Doe" },
-              { label: "Email", name: "email", type: "email", placeholder: "johndoe@gmail.com" },
-              { label: "Password", name: "password", type: "password", placeholder: "********" },
-              { label: "PAN Card Number", name: "pancard", type: "text", placeholder: "ABCDEF1234G" },
-              { label: "Adhar Card Number", name: "adharcard", type: "text", placeholder: "123456789012" },
-              { label: "Phone Number", name: "phoneNumber", type: "tel", placeholder: "+1234567890" },
-            ].map((field) => (
-              <div className="my-3" key={field.name}>
-                <Label className="text-gray-800">{field.label}</Label>
-                <Input
-                  type={field.type}
-                  name={field.name}
-                  value={input[field.name]}
-                  onChange={changeEventHandler}
-                  placeholder={field.placeholder}
-                  className="mt-1 focus:ring-2 focus:ring-blue-500 border border-gray-300 rounded-md px-4 py-2 transition-all"
-                />
-              </div>
-            ))}
-
-            <div className="my-5">
-              <Label className="text-gray-800 block mb-2">Register As</Label>
-              <div className="flex gap-6">
-                {["Student", "Recruiter"].map((role) => (
-                  <label
-                    key={role}
-                    className="flex items-center space-x-2 cursor-pointer hover:scale-105 transition-transform"
-                  >
+          {/* Form Card */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-6 md:p-8">
+            <form onSubmit={submitHandler} className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
+                {formFields.map((field) => (
+                  <div key={field.name} className="space-y-1">
+                    <Label className="text-gray-700 font-medium flex items-center gap-2 text-sm">
+                      <span>{field.icon}</span>
+                      {field.label}
+                    </Label>
                     <Input
-                      type="radio"
-                      name="role"
-                      value={role}
-                      checked={input.role === role}
+                      type={field.type}
+                      name={field.name}
+                      value={input[field.name]}
                       onChange={changeEventHandler}
-                      className="accent-blue-600"
+                      placeholder={field.placeholder}
+                      className="h-10 pl-4 pr-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-all duration-300 hover:border-gray-300 bg-white/70 text-sm"
+                      required
                     />
-                    <span className="text-gray-700">{role}</span>
-                  </label>
+                  </div>
                 ))}
               </div>
-            </div>
 
-            <div className="my-4">
-              <Label className="text-gray-800">Profile Photo</Label>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={ChangeFilehandler}
-                className="mt-1 file:mr-4 file:py-2 file:px-4 file:border-0 file:rounded-full file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
-              />
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center my-6">
-                <div className="w-8 h-8 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+              {/* Role Selection */}
+              <div className="space-y-2">
+                <Label className="text-gray-700 font-medium flex items-center gap-2 text-sm">
+                  <span>👥</span>
+                  Register As
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {["Student", "Recruiter"].map((role) => (
+                    <label
+                      key={role}
+                      className={`flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105
+                      ${input.role === role
+                        ? "border-blue-500 bg-blue-50 text-blue-700"
+                        : "border-gray-200 bg-white/70 hover:border-gray-300"
+                      }`}
+                    >
+                      <Input
+                        type="radio"
+                        name="role"
+                        value={role}
+                        checked={input.role === role}
+                        onChange={changeEventHandler}
+                        className="sr-only"
+                      />
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full border-2 transition-all ${
+                          input.role === role ? "border-blue-500 bg-blue-500" : "border-gray-300"
+                        }`}>
+                          {input.role === role && (
+                            <div className="w-full h-full rounded-full bg-blue-500 scale-50"></div>
+                          )}
+                        </div>
+                        <span className="font-medium text-sm">
+                          {role === "Student" ? "🎓 Student" : "🏢 Recruiter"}
+                        </span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
-            ) : (
-              <button
-                type="submit"
-                className="w-full py-3 mt-6 text-white font-semibold bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all duration-200 rounded-xl"
-              >
-                Register
-              </button>
-            )}
 
-            <p className="text-center text-gray-700 mt-4">
-              Already have an account?{" "}
-              <Link to="/login" className="text-blue-600 font-semibold hover:underline">
-                Login
-              </Link>
+              {/* File Upload */}
+              <div className="space-y-2">
+                <Label className="text-gray-700 font-medium flex items-center gap-2 text-sm">
+                  <span>📷</span>
+                  Profile Photo
+                </Label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={ChangeFilehandler}
+                  className="h-10 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-400 transition-all duration-300 file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-blue-500 file:text-white file:font-medium hover:file:bg-blue-600 cursor-pointer bg-white/70 text-sm"
+                />
+                <p className="text-xs text-gray-500">Upload a clear photo (JPG, PNG, GIF)</p>
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-3">
+                {loading ? (
+                  <div className="flex justify-center items-center h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-white font-medium text-sm">Creating Account...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+                  >
+                    <span>✨</span>
+                    Create Account
+                  </button>
+                )}
+              </div>
+
+              {/* Login Link */}
+              <div className="text-center pt-3 border-t border-gray-200">
+                <p className="text-gray-600 text-sm">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-blue-600 font-semibold hover:text-purple-600 transition-colors duration-200 hover:underline"
+                  >
+                    Sign in here
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
+
+          {/* Footer Note */}
+          <div className="text-center mt-4">
+            <p className="text-gray-500 text-xs">
+              By creating an account, you agree to our Terms of Service and Privacy Policy
             </p>
-          </form>
-        </div> 
+          </div>
+        </div>
       </div>
-             <div>
-              <Footer />
-             </div>
-
     </div>
   );
 };

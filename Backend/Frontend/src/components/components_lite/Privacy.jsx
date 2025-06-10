@@ -1,7 +1,11 @@
 import React from "react";
+import Footer from "./Footer";
+import LoginNavbar from "./LoginNavbar";
 
 const Privacy = () => {
   return (
+    <div>
+    <LoginNavbar />
     <div
       style={{
         padding: "20px",
@@ -264,6 +268,8 @@ const Privacy = () => {
           margin-bottom: 5px;
         }
       `}</style>
+    </div>
+      <Footer />
     </div>
   );
 };
