@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 const authenticateToken = (req, res, next) => {
   try {
     const token = req.cookies.token;
+
     if (!token) {
       return res.status(401).json({ message: "No token provided", success: false });
     }
@@ -13,11 +14,11 @@ const authenticateToken = (req, res, next) => {
       return res.status(401).json({ message: "Invalid token", success: false });
     }
 
-    req.id = decoded.userId;  // <-- This is the fix: set req.id
+    req.id = decoded.userId;
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token", success: false });
+    return res.status(401).json({ message: "Unauthorized", success: false });
   }
 };
 

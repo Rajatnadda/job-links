@@ -3,6 +3,9 @@ import { Job } from "../models/job.model.js";
 // Admin job posting
 export const postJob = async (req, res) => {
   try {
+    console.log("REQ.ID:", req.id);
+    console.log("REQ.BODY:", req.body);
+
     const {
       title,
       description,
@@ -12,7 +15,7 @@ export const postJob = async (req, res) => {
       jobType,
       experience,
       position,
-      companyId,  // make sure frontend sends "companyId"
+      companyId,
     } = req.body;
 
     const userId = req.id;
@@ -64,6 +67,7 @@ export const postJob = async (req, res) => {
     });
   }
 };
+
 
 // Get all jobs with optional keyword filter
 export const getAllJobs = async (req, res) => {

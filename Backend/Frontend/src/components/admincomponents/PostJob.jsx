@@ -49,60 +49,43 @@ const PostJob = () => {
     }
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+const submitHandler = async (e) => {
+  e.preventDefault();
 
-    // Frontend validation
-    if (
-      !input.title ||
-      !input.description ||
-      !input.requirements ||
-      !input.salary ||
-      !input.location ||
-      !input.jobType ||
-      !input.experience ||
-      !input.position ||
-      !input.company
-    ) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    const preparedInput = {
-      title: input.title,
-      description: input.description,
-      requirements: input.requirements
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
-      salary: input.salary,
-      location: input.location,
-      jobType: input.jobType,
-      experience: Number(input.experience),
-      position: Number(input.position),
-      companyId: input.company,
-    };
-
-    try {
-      setLoading(true);
-      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-
-      if (res.data.success) {
-        toast.success(res.data.message);
-        navigate("/admin/jobs");
-      } else {
-        toast.error(res.data.message || "Job post failed");
-      }
-    } catch (error) {
-      console.error("Job post error:", error);
-      toast.error(error?.response?.data?.message || "Server error occurred");
-    } finally {
-      setLoading(false);
-    }
+  const preparedInput = {
+    title: input.title,
+    description: input.description,
+    requirements: input.requirements
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean),
+    salary: input.salary,
+    location: input.location,
+    jobType: input.jobType,
+    experience: Number(input.experience),
+    position: Number(input.position),
+    companyId: input.company, // <-- important
   };
+
+  try {
+    setLoading(true);
+    const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true, // <-- sends cookies
+    });
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+      navigate("/admin/jobs");
+    } else {
+      toast.error(res.data.message || "Job post failed");
+    }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Server error occurred");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
