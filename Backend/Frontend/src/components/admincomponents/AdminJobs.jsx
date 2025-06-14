@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSearchJobByText } from "@/redux/jobSlice";
-import AdminJobsTable from "./AdminJobsTable";
+import AdminJobsTable from "../components/AdminJobsTable";
 import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
 
 const AdminJobs = () => {
@@ -23,7 +23,6 @@ const AdminJobs = () => {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* Page Heading */}
         <header className="mb-10">
           <h1 className="text-4xl font-bold text-blue-700 tracking-tight">
             Job Management Dashboard
@@ -33,27 +32,23 @@ const AdminJobs = () => {
           </p>
         </header>
 
-        {/* Search and Button */}
         <section className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <Input
             type="search"
-            aria-label="Search jobs by title or company"
-            className="w-full md:w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             placeholder="Search by job title or company..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             autoComplete="off"
+            className="w-full md:w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
           <Button
             onClick={() => navigate("/admin/jobs/create")}
             className="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-md shadow whitespace-nowrap"
-            aria-label="Post a new job"
           >
             + Post New Job
           </Button>
         </section>
 
-        {/* Job Listings Table */}
         <section className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
           <AdminJobsTable />
         </section>
