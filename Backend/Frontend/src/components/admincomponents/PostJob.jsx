@@ -45,54 +45,46 @@ const PostJob = () => {
       (company) => company.name.toLowerCase() === value
     );
     if (selectedCompany) {
-      setInput({ ...input, company: selectedCompany._id }); // <-- key is now 'company'
+      setInput({ ...input, company: selectedCompany._id });
     }
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+const submitHandler = async (e) => {
+  e.preventDefault();
 
-    if (!input.company) {
-      toast.error("Please select a company");
-      return;
+  const preparedInput = {
+  title: input.title,
+  description: input.description,
+  requirements: input.requirements
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean),
+  salary: input.salary,
+  location: input.location,
+  jobType: input.jobType,
+  experience: Number(input.experience),
+  position: Number(input.position),
+  company: input.company, // ✅ renamed from companyId to company
+};
+  try {
+    setLoading(true);
+    const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true, // <-- sends cookies
+    });
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+      navigate("/admin/jobs");
+    } else {
+      toast.error(res.data.message || "Job post failed");
     }
-
-    // Prepare payload matching backend schema keys expected
-    const preparedInput = {
-      title: input.title,
-      description: input.description,
-      requirements: input.requirements
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
-      salary: input.salary,
-      location: input.location,
-      jobType: input.jobType,
-      experience: Number(input.experience), // number type
-      position: Number(input.position),     // number type
-      companyId: input.company,                // key name changed here
-    };
-
-    try {
-      setLoading(true);
-      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-
-      if (res.data.success) {
-        toast.success(res.data.message);
-        navigate("/admin/jobs");
-      } else {
-        toast.error(res.data.message || "Job post failed");
-      }
-    } catch (error) {
-      console.error("Job post error:", error);
-      toast.error(error?.response?.data?.message || "Server error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Server error occurred");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
@@ -107,7 +99,80 @@ const PostJob = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* ...InputField components unchanged, omitted here for brevity... */}
+            <InputField
+              label="Job Title"
+              id="title"
+              name="title"
+              value={input.title}
+              onChange={changeEventHandler}
+              placeholder="Enter job title"
+              required
+            />
+            <InputField
+              label="Description"
+              id="description"
+              name="description"
+              value={input.description}
+              onChange={changeEventHandler}
+              placeholder="Enter job description"
+              required
+            />
+            <InputField
+              label="Requirements (comma separated)"
+              id="requirements"
+              name="requirements"
+              value={input.requirements}
+              onChange={changeEventHandler}
+              placeholder="e.g. React, Node.js, MongoDB"
+              required
+            />
+            <InputField
+              label="Salary"
+              id="salary"
+              name="salary"
+              value={input.salary}
+              onChange={changeEventHandler}
+              placeholder="Enter salary"
+              required
+            />
+            <InputField
+              label="Location"
+              id="location"
+              name="location"
+              value={input.location}
+              onChange={changeEventHandler}
+              placeholder="Enter location"
+              required
+            />
+            <InputField
+              label="Job Type"
+              id="jobType"
+              name="jobType"
+              value={input.jobType}
+              onChange={changeEventHandler}
+              placeholder="e.g. Full-time"
+              required
+            />
+            <InputField
+              label="Experience (in years)"
+              id="experience"
+              name="experience"
+              value={input.experience}
+              onChange={changeEventHandler}
+              placeholder="e.g. 2"
+              required
+              type="number"
+            />
+            <InputField
+              label="Number of Positions"
+              id="position"
+              name="position"
+              value={input.position}
+              onChange={changeEventHandler}
+              placeholder="e.g. 3"
+              required
+              type="number"
+            />
 
             <div className="md:col-span-2">
               <Label>Select Company</Label>
