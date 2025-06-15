@@ -82,7 +82,7 @@ const PostJob = () => {
 
       if (res.data.success) {
         toast.success(res.data.message);
-        navigate("/admin/jobs");
+        navigate("/admin/jobs/create");
       } else {
         toast.error(res.data.message || "Job post failed");
       }
