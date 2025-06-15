@@ -10,7 +10,7 @@ import {
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Edit2, Eye, MoreHorizontal } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from 'react-router-dom'
 import { useSelector } from "react-redux";
 
 const AdminJobsTable = () => {
@@ -53,10 +53,7 @@ const AdminJobsTable = () => {
             </TableRow>
           ) : (
             filterJobs.map((job) => (
-              <TableRow
-                key={job._id}
-                className="hover:bg-gray-50 transition-colors duration-200"
-              >
+              <TableRow key={job._id} className="hover:bg-gray-50">
                 <TableCell className="px-4 py-3 text-gray-800">
                   {job?.company?.name || "—"}
                 </TableCell>
@@ -71,7 +68,7 @@ const AdminJobsTable = () => {
                     <PopoverTrigger asChild>
                       <button
                         aria-label="Job actions"
-                        className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+                        className="p-1 rounded-full hover:bg-gray-200"
                       >
                         <MoreHorizontal className="w-5 h-5 text-gray-600" />
                       </button>

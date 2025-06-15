@@ -10,14 +10,11 @@ const useGetAllAdminJobs = () => {
     const fetchJobs = async () => {
       try {
         const { data } = await axios.get("/api/job/admin");
-        if (data.success) {
-          dispatch(setAllAdminJobs(data.jobs));
-        }
+        dispatch(setAllAdminJobs(data.jobs));
       } catch (error) {
-        console.error("Error fetching admin jobs", error);
+        console.error("Error fetching admin jobs:", error);
       }
     };
-
     fetchJobs();
   }, [dispatch]);
 };

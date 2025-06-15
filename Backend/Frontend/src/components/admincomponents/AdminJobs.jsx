@@ -21,7 +21,6 @@ const AdminJobs = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
       <Navbar />
-
       <main className="max-w-7xl mx-auto px-6 py-12">
         <header className="mb-10">
           <h1 className="text-4xl font-bold text-blue-700 tracking-tight">
@@ -38,12 +37,11 @@ const AdminJobs = () => {
             placeholder="Search by job title or company..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            autoComplete="off"
-            className="w-full md:w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="w-full md:w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           <Button
             onClick={() => navigate("/admin/jobs/create")}
-            className="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-md shadow whitespace-nowrap"
+            className="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-md shadow"
           >
             + Post New Job
           </Button>
