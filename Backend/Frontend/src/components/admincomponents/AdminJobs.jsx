@@ -1,56 +1,102 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components_lite/Navbar";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setSearchJobByText } from "@/redux/jobSlice";
-import useGetAllAdminJobs from "@/hooks/useGetAllAdminJobs";
-import AdminJobsTable from "./AdminJobsTable";
+import { useDispatch, useSelector } from "react-redux";
+import { setAllAdminJobs, setSearchJobByText } from "../../redux/jobSlice";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const AdminJobs = () => {
-  useGetAllAdminJobs();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [input, setInput] = useState("");
+  const jobs = useSelector((state) => state.job.allAdminJobs);
+  const searchQuery = useSelector((state) => state.job.searchJobByText);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAdminJobs = async () => {
+    try {
+      const { data } = await axios.get("/api/job/admin-jobs");
+      dispatch(setAllAdminJobs(data.jobs));
+    } catch (error) {
+      console.error("Error fetching admin jobs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    dispatch(setSearchJobByText(input));
-  }, [input, dispatch]);
+    fetchAdminJobs();
+  }, []);
+
+  const filteredJobs = jobs?.filter((job) =>
+    job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.company?.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
-      <Navbar />
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        <header className="mb-10">
-          <h1 className="text-4xl font-bold text-blue-700 tracking-tight">
-            Job Management Dashboard
-          </h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Review, search, and manage your company’s job postings.
-          </p>
-        </header>
+    <div className="px-6 py-10 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold text-blue-700 mb-2">Job Management Dashboard</h1>
+      <p className="text-gray-600 mb-6">
+        Review, search, and manage your company’s job postings.
+      </p>
 
-        <section className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <Input
-            type="search"
-            placeholder="Search by job title or company..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="w-full md:w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-          <Button
-            onClick={() => navigate("/admin/jobs/create")}
-            className="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-md shadow"
-          >
+      <div className="flex items-center justify-between mb-6">
+        <input
+          type="text"
+          placeholder="Search by job title or company..."
+          value={searchQuery}
+          onChange={(e) => dispatch(setSearchJobByText(e.target.value))}
+          className="border rounded px-4 py-2 w-full max-w-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+        />
+        <Link to="/admin/jobs/new">
+          <button className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
             + Post New Job
-          </Button>
-        </section>
+          </button>
+        </Link>
+      </div>
 
-        <section className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
-          <AdminJobsTable />
-        </section>
-      </main>
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <table className="w-full table-auto text-sm text-left">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 font-semibold">Company Name</th>
+              <th className="px-4 py-2 font-semibold">Role</th>
+              <th className="px-4 py-2 font-semibold">Date</th>
+              <th className="px-4 py-2 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan="4" className="text-center py-6 text-gray-500">
+                  Loading jobs...
+                </td>
+              </tr>
+            ) : filteredJobs.length === 0 ? (
+              <tr>
+                <td colSpan="4" className="text-center italic text-gray-500 py-6">
+                  No jobs found
+                </td>
+              </tr>
+            ) : (
+              filteredJobs.map((job) => (
+                <tr key={job._id} className="border-t">
+                  <td className="px-4 py-2">{job.company?.name || "N/A"}</td>
+                  <td className="px-4 py-2">{job.title}</td>
+                  <td className="px-4 py-2">
+                    {new Date(job.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2">
+                    <Link
+                      to={`/admin/jobs/${job._id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
