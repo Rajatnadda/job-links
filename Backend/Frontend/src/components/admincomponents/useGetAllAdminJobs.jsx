@@ -1,21 +1,25 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { setAllAdminJobs } from "../redux/jobSlice";
 import axios from "axios";
-import { setAllAdminJobs } from "@/redux/jobSlice";
 
 const useGetAllAdminJobs = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchJobs = async () => {
+    const fetchAdminJobs = async () => {
       try {
-        const { data } = await axios.get("/api/job/admin");
-        dispatch(setAllAdminJobs(data.jobs));
+        const res = await axios.get("/api/job/admin-jobs");
+        console.log("API Response:", res.data); // ✅ You have this
+        if (res.data?.success) {
+          dispatch(setAllAdminJobs(res.data.jobs));
+        }
       } catch (error) {
-        console.error("Error fetching admin jobs:", error);
+        console.error("Error fetching admin jobs", error);
       }
     };
-    fetchJobs();
+
+    fetchAdminJobs();
   }, [dispatch]);
 };
 
