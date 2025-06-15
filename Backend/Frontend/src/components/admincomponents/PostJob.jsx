@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 
 import Navbar from "../components_lite/Navbar";
 import { JOB_API_ENDPOINT } from "@/utils/data";
+
 import {
   Select,
   SelectContent,
@@ -42,49 +43,55 @@ const PostJob = () => {
 
   const selectChangeHandler = (value) => {
     const selectedCompany = companies.find(
-      (company) => company.name.toLowerCase() === value
+      (company) => company.name.toLowerCase() === value.toLowerCase()
     );
     if (selectedCompany) {
       setInput({ ...input, company: selectedCompany._id });
     }
   };
 
-const submitHandler = async (e) => {
-  e.preventDefault();
+  const submitHandler = async (e) => {
+    e.preventDefault();
 
-  const preparedInput = {
-  title: input.title,
-  description: input.description,
-  requirements: input.requirements
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean),
-  salary: input.salary,
-  location: input.location,
-  jobType: input.jobType,
-  experience: Number(input.experience),
-  position: Number(input.position),
-  company: input.company, // ✅ renamed from companyId to company
-};
-  try {
-    setLoading(true);
-    const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true, // <-- sends cookies
-    });
-
-    if (res.data.success) {
-      toast.success(res.data.message);
-      navigate("/admin/jobs");
-    } else {
-      toast.error(res.data.message || "Job post failed");
+    if (!input.company) {
+      toast.error("Please select a company.");
+      return;
     }
-  } catch (error) {
-    toast.error(error?.response?.data?.message || "Server error occurred");
-  } finally {
-    setLoading(false);
-  }
-};
+
+    const preparedInput = {
+      title: input.title,
+      description: input.description,
+      requirements: input.requirements
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
+      salary: input.salary,
+      location: input.location,
+      jobType: input.jobType,
+      experience: Number(input.experience),
+      position: Number(input.position),
+      company: input.company,
+    };
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, preparedInput, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        toast.success(res.data.message);
+        navigate("/admin/jobs");
+      } else {
+        toast.error(res.data.message || "Job post failed");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Server error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
