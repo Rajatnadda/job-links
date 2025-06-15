@@ -47,7 +47,7 @@ const AdminJobs = () => {
           onChange={(e) => dispatch(setSearchJobByText(e.target.value))}
           className="border rounded px-4 py-2 w-full max-w-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
         />
-        <Link to="/admin/jobs/new">
+        <Link to="/admin/jobs/create">
           <button className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
             + Post New Job
           </button>
