@@ -1,6 +1,6 @@
+// job.controller.js
 import { Job } from "../models/job.model.js";
 
-// POST /api/job/post
 export const postJob = async (req, res) => {
   try {
     const {
@@ -29,7 +29,7 @@ export const postJob = async (req, res) => {
       experience: Number(experience),
       position: Number(position),
       company,
-      created_by: req.id,
+      created_by: req.user.id, // ✅ Corrected
       applications: [],
     });
 
@@ -46,6 +46,21 @@ export const postJob = async (req, res) => {
     });
   }
 };
+
+export const getAdminJobs = async (req, res) => {
+  try {
+    const adminId = req.user.id; // ✅ Corrected
+    const jobs = await Job.find({ created_by: adminId })
+      .populate("company")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({ jobs, success: true });
+  } catch (error) {
+    console.error("Error fetching admin jobs:", error.message);
+    return res.status(500).json({ message: "Server Error", success: false });
+  }
+};
+
 
 // Get all jobs
 export const getAllJobs = async (req, res) => {
@@ -87,19 +102,3 @@ export const getJobById = async (req, res) => {
 };
 
 // Get jobs posted by admin user
-export const getAdminJobs = async (req, res) => {
-  try {
-    const adminId = req.id;
-    const jobs = await Job.find({ created_by: adminId })
-      .populate("company")
-      .sort({ createdAt: -1 });
-
-    if (!jobs || jobs.length === 0) {
-      return res.status(200).json({ jobs: [], success: true }); // ✅ Avoid 404 here
-    }
-    return res.status(200).json({ jobs, success: true });
-  } catch (error) {
-    console.error("Error fetching admin jobs:", error.message);
-    return res.status(500).json({ message: "Server Error", success: false });
-  }
-};

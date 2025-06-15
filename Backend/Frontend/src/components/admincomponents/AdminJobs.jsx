@@ -1,8 +1,10 @@
+// AdminJobs.jsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllAdminJobs, setSearchJobByText } from "../../redux/jobSlice";
-import axios from 'axios';
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { JOB_API_ENDPOINT } from "@/utils/data";
 
 const AdminJobs = () => {
   const dispatch = useDispatch();
@@ -12,7 +14,9 @@ const AdminJobs = () => {
 
   const fetchAdminJobs = async () => {
     try {
-      const { data } = await axios.get("/api/job/admin-jobs");
+      const { data } = await axios.get(`${JOB_API_ENDPOINT}/getAdminJobs`, {
+        withCredentials: true,
+      });
       dispatch(setAllAdminJobs(data.jobs));
     } catch (error) {
       console.error("Error fetching admin jobs:", error);
@@ -26,18 +30,16 @@ const AdminJobs = () => {
   }, []);
 
   const filteredJobs = Array.isArray(jobs)
-  ? jobs.filter((job) =>
-      job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  : [];
+    ? jobs.filter((job) =>
+        job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.company?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="px-6 py-10 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold text-blue-700 mb-2">Job Management Dashboard</h1>
-      <p className="text-gray-600 mb-6">
-        Review, search, and manage your company’s job postings.
-      </p>
+      <p className="text-gray-600 mb-6">Review, search, and manage your company’s job postings.</p>
 
       <div className="flex items-center justify-between mb-6">
         <input
@@ -67,15 +69,11 @@ const AdminJobs = () => {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="4" className="text-center py-6 text-gray-500">
-                  Loading jobs...
-                </td>
+                <td colSpan="4" className="text-center py-6 text-gray-500">Loading jobs...</td>
               </tr>
             ) : filteredJobs.length === 0 ? (
               <tr>
-                <td colSpan="4" className="text-center italic text-gray-500 py-6">
-                  No jobs found
-                </td>
+                <td colSpan="4" className="text-center italic text-gray-500 py-6">No jobs found</td>
               </tr>
             ) : (
               filteredJobs.map((job) => (
@@ -86,10 +84,7 @@ const AdminJobs = () => {
                     {new Date(job.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-2">
-                    <Link
-                      to={`/admin/jobs/${job._id}`}
-                      className="text-blue-600 hover:underline"
-                    >
+                    <Link to={`/admin/jobs/${job._id}`} className="text-blue-600 hover:underline">
                       View
                     </Link>
                   </td>
