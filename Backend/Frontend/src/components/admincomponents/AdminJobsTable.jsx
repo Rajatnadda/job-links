@@ -8,85 +8,82 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Edit2, Eye, MoreHorizontal } from "lucide-react";
-import {useNavigate} from 'react-router-dom'
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const AdminJobsTable = () => {
+  const { companies, searchCompanyByText } = useSelector(
+    (store) => store.company
+  );
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
   const navigate = useNavigate();
-  const [filterJobs, setFilterJobs] = useState([]);
+
+  const [filterJobs, setFilterJobs] = useState(allAdminJobs);
 
   useEffect(() => {
-    const filtered = (allAdminJobs || []).filter((job) => {
-      if (!searchJobByText) return true;
-      const text = searchJobByText.toLowerCase();
-      return (
-        job?.title?.toLowerCase().includes(text) ||
-        job?.company?.name?.toLowerCase().includes(text)
-      );
-    });
-    setFilterJobs(filtered);
+    const filteredJobs =
+      allAdminJobs.length >= 0 &&
+      allAdminJobs.filter((job) => {
+        if (!searchJobByText) {
+          return true;
+        }
+        return (
+          job.title?.toLowerCase().includes(searchJobByText.toLowerCase()) ||
+          job?.company?.name
+            .toLowerCase()
+            .includes(searchJobByText.toLowerCase())
+        );
+      });
+    setFilterJobs(filteredJobs);
   }, [allAdminJobs, searchJobByText]);
 
+  console.log("COMPANIES", companies);
+  if (!companies) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="overflow-x-auto bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-      <Table className="min-w-full text-sm">
-        <TableCaption className="text-gray-500 text-sm mb-2">
-          Your recently posted jobs
-        </TableCaption>
+    <div>
+      <Table>
+        <TableCaption>Your recent Posted Jobs</TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100 text-gray-700">
-            <TableHead className="px-4 py-3 font-semibold">Company Name</TableHead>
-            <TableHead className="px-4 py-3 font-semibold">Role</TableHead>
-            <TableHead className="px-4 py-3 font-semibold">Date</TableHead>
-            <TableHead className="px-4 py-3 font-semibold text-right">Actions</TableHead>
+          <TableRow>
+            <TableHead>Company Name</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {filterJobs.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={4} className="text-center text-gray-500 py-6 italic">
-                No jobs found
-              </TableCell>
-            </TableRow>
+            <span>No Job Added</span>
           ) : (
-            filterJobs.map((job) => (
-              <TableRow key={job._id} className="hover:bg-gray-50">
-                <TableCell className="px-4 py-3 text-gray-800">
-                  {job?.company?.name || "—"}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-800">
-                  {job?.title || "—"}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-gray-600">
-                  {job?.createdAt ? job.createdAt.split("T")[0] : "—"}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-right">
+            filterJobs?.map((job) => (
+              <TableRow key={job.id}>
+                <TableCell>{job?.company?.name}</TableCell>
+                <TableCell>{job.title}</TableCell>
+                <TableCell>{job.createdAt.split("T")[0]}</TableCell>
+                <TableCell className="text-right cursor-pointer">
                   <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        aria-label="Job actions"
-                        className="p-1 rounded-full hover:bg-gray-200"
-                      >
-                        <MoreHorizontal className="w-5 h-5 text-gray-600" />
-                      </button>
+                    <PopoverTrigger>
+                      <MoreHorizontal />
                     </PopoverTrigger>
-                    <PopoverContent className="w-40 bg-white border border-gray-300 rounded-md shadow-md p-2">
+                    <PopoverContent className="w-32">
                       <div
-                        onClick={() => navigate(`/admin/jobs/edit/${job._id}`)}
-                        className="flex items-center gap-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                        onClick={() => navigate(`/admin/companies/${job._id}`)}
+                        className="flex items-center gap-2 w-fit cursor-pointer mb-1"
                       >
-                        <Edit2 className="w-4 h-4 text-blue-600" />
-                        <span className="text-gray-800">Edit</span>
+                        <Edit2 className="w-4" />
+                        <span>Edit</span>
                       </div>
-                      <div
-                        onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)}
-                        className="flex items-center gap-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
-                      >
-                        <Eye className="w-4 h-4 text-green-600" />
-                        <span className="text-gray-800">Applicants</span>
+                      <hr />
+                      <div onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} className="flex items-center gap-2 w-fit cursor-pointer mt-1">
+                        <Eye className="w-4"></Eye>
+                        <span>Applicants</span>
                       </div>
                     </PopoverContent>
                   </Popover>

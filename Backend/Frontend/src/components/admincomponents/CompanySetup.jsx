@@ -13,10 +13,7 @@ import useGetCompanyById from "@/hooks/useGetCompanyById.jsx";
 
 const CompanySetup = () => {
   const params = useParams();
-  const navigate = useNavigate();
-  const { singleCompany } = useSelector((store) => store.company);
-  const [loading, setLoading] = useState(false);
-
+  useGetCompanyById(params.id);
   const [input, setInput] = useState({
     name: "",
     description: "",
@@ -24,18 +21,10 @@ const CompanySetup = () => {
     location: "",
     file: null,
   });
+  const { singleCompany } = useSelector((store) => store.company);
 
-  useGetCompanyById(params.id);
-
-  useEffect(() => {
-    setInput({
-      name: singleCompany.name || "",
-      description: singleCompany.description || "",
-      website: singleCompany.website || "",
-      location: singleCompany.location || "",
-      file: null,
-    });
-  }, [singleCompany]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -56,7 +45,6 @@ const CompanySetup = () => {
     if (input.file) {
       formData.append("file", input.file);
     }
-
     try {
       setLoading(true);
       const res = await axios.put(
@@ -69,7 +57,9 @@ const CompanySetup = () => {
           withCredentials: true,
         }
       );
+      console.log(res); // Debugging API response
 
+      // Assuming a successful response has a `message` property
       if (res.status === 200 && res.data.message) {
         toast.success(res.data.message);
         navigate("/admin/companies");
@@ -85,125 +75,90 @@ const CompanySetup = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-purple-50">
-      <Navbar />
-      <main className="max-w-3xl mx-auto bg-white shadow-2xl rounded-2xl p-10 mt-12 border border-gray-200">
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            onClick={() => navigate("/admin/companies")}
-            variant="outline"
-            className="flex items-center gap-2 text-gray-600 font-medium hover:text-black hover:border-gray-800 transition"
-          >
-            <ArrowLeft size={18} />
-            <span>Back</span>
-          </Button>
-          <h1 className="text-2xl font-bold text-gray-900">Company Setup</h1>
-        </div>
+  useEffect(() => {
+    setInput({
+      name: singleCompany.name || "",
+      description: singleCompany.description || "",
+      website: singleCompany.website || "",
+      location: singleCompany.location || "",
+      file: singleCompany.file || null,
+    });
+  }, [singleCompany]);
 
-        <form
-          onSubmit={submitHandler}
-          className="space-y-8"
-          encType="multipart/form-data"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  return (
+    <div>
+      <Navbar />
+      <div className="max-w-xl mx-auto my-10">
+        <form onSubmit={submitHandler}>
+          <div className="flex items-center gap-5 p-8">
+            <Button
+              onClick={() => navigate("/admin/companies")}
+              variant="outline"
+              className="flex items-center gap-2 text-gray-500 font-semibold"
+            >
+              <ArrowLeft />
+              <span>Back</span>
+            </Button>
+            <h1 className="font-bold text-xl">Company Setup</h1>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name" className="text-gray-700 font-semibold">
-                Company Name
-              </Label>
+              <Label>Company Name</Label>
               <Input
-                id="name"
-                name="name"
                 type="text"
+                name="name"
                 value={input.name}
                 onChange={changeEventHandler}
-                placeholder="Enter company name"
-                className="mt-2"
-                required
               />
             </div>
-
             <div>
-              <Label htmlFor="description" className="text-gray-700 font-semibold">
-                Description
-              </Label>
+              <Label>Description</Label>
               <Input
-                id="description"
-                name="description"
                 type="text"
+                name="description"
                 value={input.description}
                 onChange={changeEventHandler}
-                placeholder="Brief description"
-                className="mt-2"
               />
             </div>
-
             <div>
-              <Label htmlFor="website" className="text-gray-700 font-semibold">
-                Website
-              </Label>
+              <Label>Website</Label>
               <Input
-                id="website"
+                type="text"
                 name="website"
-                type="url"
                 value={input.website}
                 onChange={changeEventHandler}
-                placeholder="https://example.com"
-                className="mt-2"
               />
             </div>
-
             <div>
-              <Label htmlFor="location" className="text-gray-700 font-semibold">
-                Location
-              </Label>
+              <Label>Location</Label>
               <Input
-                id="location"
-                name="location"
                 type="text"
+                name="location"
                 value={input.location}
                 onChange={changeEventHandler}
-                placeholder="City, Country"
-                className="mt-2"
               />
             </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="file" className="text-gray-700 font-semibold">
-                Company Logo
-              </Label>
+            <div>
+              <Label>Logo</Label>
               <Input
-                id="file"
-                name="file"
                 type="file"
                 accept="image/*"
                 onChange={changeFileHandler}
-                className="mt-2"
               />
-              {input.file && (
-                <p className="mt-2 text-sm text-gray-600">
-                  Selected file: {input.file.name}
-                </p>
-              )}
             </div>
           </div>
-
-          <Button
-            type="submit"
-            className="w-full py-3 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin" size={20} />
-                Updating...
-              </span>
-            ) : (
-              "Update Company Info"
-            )}
-          </Button>
+          {loading ? (
+            <Button className="w-full my-4">
+              {" "}
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full my-4">
+              Update
+            </Button>
+          )}
         </form>
-      </main>
+      </div>
     </div>
   );
 };

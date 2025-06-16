@@ -23,4 +23,4 @@ export const { setSingleCompany, setCompanies,  setSearchCompanyByText } = compa
 
 export default companySlice.reducer;
 
-export { companySlice }; 
+export { companySlice };
