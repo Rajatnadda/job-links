@@ -49,17 +49,16 @@ export const postJob = async (req, res) => {
 
 export const getAdminJobs = async (req, res) => {
   try {
-    const adminId = req.user.id; // ✅ Corrected
-    const jobs = await Job.find({ created_by: adminId })
-      .populate("company")
-      .sort({ createdAt: -1 });
-
-    return res.status(200).json({ jobs, success: true });
-  } catch (error) {
-    console.error("Error fetching admin jobs:", error.message);
-    return res.status(500).json({ message: "Server Error", success: false });
+    const adminId = req.user?.id; // required field
+    if (!adminId) return res.status(401).json({ success: false, message: "Unauthorized" });
+    const jobs = await Job.find({ created_by: adminId }).populate("company").sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, jobs });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
 
 
 // Get all jobs

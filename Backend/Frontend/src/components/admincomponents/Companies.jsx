@@ -12,7 +12,6 @@ const Companies = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
-
   useGetAllCompanies();
 
   useEffect(() => {
@@ -20,34 +19,21 @@ const Companies = () => {
   }, [input, dispatch]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-indigo-50">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header and Add Button */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
-          <h1 className="text-3xl font-bold text-gray-800">Companies Management</h1>
-          <Button
-            onClick={() => navigate("/admin/companies/create")}
-            className="mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition"
-          >
-            + Add Company
-          </Button>
+      <main className="max-w-4xl mx-auto p-6">
+        <div className="flex justify-between items-center pb-4">
+          <h2 className="text-3xl font-bold text-gray-800">Manage Companies</h2>
+          <Button onClick={() => navigate("/admin/companies/create")}>+ Add Company</Button>
         </div>
-
-        {/* Search Input */}
-        <div className="mb-8 max-w-md">
-          <Input
-            type="search"
-            placeholder="Search companies by name..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="w-full border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg shadow-sm p-3"
-            aria-label="Filter companies by name"
-          />
-        </div>
-
-        {/* Companies Table Container */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <Input
+          type="search"
+          placeholder="Search companies..."
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          className="w-full mb-4"
+        />
+        <div className="bg-white rounded-lg shadow p-4">
           <CompaniesTable />
         </div>
       </main>
