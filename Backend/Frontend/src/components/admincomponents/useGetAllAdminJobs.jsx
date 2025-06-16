@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setAllAdminJobs } from "../redux/jobSlice";
 import axios from "axios";
+import { setAllAdminJobs } from "@/redux/jobSlice";
 
 const useGetAllAdminJobs = () => {
   const dispatch = useDispatch();

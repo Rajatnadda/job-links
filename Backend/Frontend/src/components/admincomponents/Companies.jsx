@@ -5,9 +5,9 @@ import { Button } from "../ui/button";
 import CompaniesTable from "./CompaniesTable";
 import { useNavigate } from "react-router-dom";
 
-import useGetAllCompanies from "@/hooks/usegetAllCompanies";
 import { useDispatch } from "react-redux";
 import { setSearchCompanyByText } from "@/redux/CompanySlice";
+import useGetAllCompanies from "@/hooks/usegetAllCompanies";
 
 const Companies = () => {
   const navigate = useNavigate();
