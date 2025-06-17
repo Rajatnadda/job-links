@@ -89,31 +89,38 @@ const Navbar = () => {
                 <AvatarImage src={user?.profile?.profilePhoto} alt="User" />
               </Avatar>
             </PopoverTrigger>
-            <PopoverContent className="w-80 shadow-lg border rounded-xl mt-2">
+
+            {/* FIXED: Styled Dropdown */}
+            <PopoverContent className="w-80 mt-2 rounded-xl border bg-white shadow-xl p-4 z-50">
               <div className="flex items-center gap-4">
                 <Avatar className="ring-2 ring-violet-500">
                   <AvatarImage src={user?.profile?.profilePhoto} alt="User" />
                 </Avatar>
                 <div>
                   <h3 className="text-lg font-semibold">{user?.fullname}</h3>
-                  <p className="text-sm text-muted-foreground truncate">
+                  <p className="text-sm text-gray-500 truncate">
                     {user?.profile?.bio || "No bio added"}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-3">
+              {/* Actions */}
+              <div className="mt-6 flex flex-col gap-4 border-t pt-4">
                 {user?.role === "Student" && (
                   <div className="flex items-center gap-2">
                     <User2 className="text-violet-600" />
-                    <Button variant="link" className="p-0 text-left">
+                    <Button variant="link" className="p-0 text-left text-violet-700 hover:text-violet-900">
                       <Link to="/Profile">Profile</Link>
                     </Button>
                   </div>
                 )}
-                <div className="flex items-center gap-2 text-red-600">
-                  <LogOut />
-                  <Button variant="link" onClick={logoutHandler} className="p-0 text-left text-red-600 hover:text-red-800">
+                <div className="flex items-center gap-2">
+                  <LogOut className="text-red-600" />
+                  <Button
+                    variant="link"
+                    onClick={logoutHandler}
+                    className="p-0 text-left text-red-600 hover:text-red-800"
+                  >
                     Logout
                   </Button>
                 </div>
