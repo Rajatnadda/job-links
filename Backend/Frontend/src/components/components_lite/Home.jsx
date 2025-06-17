@@ -27,20 +27,18 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative bg-white py-24 shadow-md border-b">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h1 className="text-5xl font-extrabold leading-tight mb-6 text-gray-900">
+      <section className="relative bg-gradient-to-br from-indigo-50 via-white to-indigo-100 py-24">
+        <div className="absolute inset-0 bg-[url('/hero-pattern.svg')] bg-cover bg-center opacity-5 pointer-events-none"></div>
+        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-gray-900">
             Find Your <span className="text-indigo-600">Dream Job</span> Today
           </h1>
-          <p className="max-w-3xl mx-auto text-lg text-gray-600 mb-10">
-            Discover the latest opportunities across technology, design,
-            marketing, and more. Take your career to the next level with our
-            curated listings.
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 mb-10">
+            Discover top opportunities across tech, design, marketing, and more — tailored just for you.
           </p>
           <a
             href="#jobs"
-            className="inline-block px-8 py-3 bg-indigo-600 text-white text-lg font-medium rounded-md shadow hover:bg-indigo-700 transition duration-300"
-            aria-label="Browse Jobs"
+            className="inline-block px-8 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-full shadow hover:bg-indigo-700 transition duration-300"
           >
             Browse Jobs
           </a>
@@ -48,9 +46,9 @@ const Home = () => {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-gray-100 border-t">
+      <section className="py-20 bg-white border-t">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-semibold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-900 mb-14">
             Explore Job Categories
           </h2>
           <Categories />
@@ -58,21 +56,16 @@ const Home = () => {
       </section>
 
       {/* Latest Jobs Section */}
-      <section
-        id="jobs"
-        className="py-16 bg-white border-t rounded-t-3xl shadow-inner"
-      >
+      <section id="jobs" className="py-20 bg-gray-50 border-t rounded-t-3xl shadow-inner">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-semibold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-900 mb-14">
             Latest Job Listings
           </h2>
 
           {loading && (
-            <div className="flex justify-center items-center space-x-4 py-12">
+            <div className="flex justify-center items-center gap-4 py-12">
               <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-indigo-700 text-lg font-medium">
-                Loading jobs...
-              </p>
+              <p className="text-indigo-700 text-lg font-medium">Loading jobs...</p>
             </div>
           )}
 

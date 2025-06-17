@@ -29,6 +29,14 @@ const Profile = () => {
     }
   }, []);
 
+  if (!user) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-indigo-600 text-lg">
+        Loading profile...
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-50">
       <Navbar />
@@ -36,20 +44,22 @@ const Profile = () => {
       {/* Profile Card */}
       <div
         ref={cardRef}
-        className="max-w-4xl mx-auto my-10 p-8 bg-white shadow-xl border border-gray-200 rounded-3xl opacity-0 translate-y-4"
+        className="max-w-5xl mx-auto my-10 p-10 bg-white shadow-2xl border border-gray-300 rounded-3xl opacity-0 translate-y-4"
       >
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
           <div className="flex items-center gap-6">
-            <Avatar className="h-24 w-24 border-4 border-indigo-500 shadow-md">
+            <Avatar className="h-28 w-28 border-4 border-indigo-500 shadow-lg">
               <AvatarImage
-                src={user?.profile?.profilePhoto}
+                src={user?.profile?.profilePhoto || "/default-avatar.png"}
                 alt={user?.fullname || "User Avatar"}
               />
             </Avatar>
             <div>
-              <h1 className="text-3xl font-bold text-indigo-800">{user?.fullname}</h1>
-              <p className="text-gray-600 mt-1 italic">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-800">
+                {user?.fullname}
+              </h1>
+              <p className="text-gray-500 mt-1 italic text-sm md:text-base">
                 {user?.profile?.bio || "No bio available"}
               </p>
             </div>
@@ -60,12 +70,12 @@ const Profile = () => {
             className="flex items-center gap-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition"
           >
             <Pen size={16} />
-            Edit
+            Edit Profile
           </Button>
         </div>
 
         {/* Contact Info */}
-        <div className="mt-8 space-y-3 text-gray-700">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
           <div className="flex items-center gap-3">
             <Mail className="text-indigo-500" size={20} />
             <a
@@ -87,16 +97,16 @@ const Profile = () => {
         </div>
 
         {/* Skills */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold text-indigo-700 border-b border-indigo-200 pb-1">
+        <div className="mt-10">
+          <h2 className="text-xl font-bold text-indigo-700 border-b border-indigo-200 pb-2">
             Skills
           </h2>
-          <div className="flex flex-wrap gap-3 mt-3">
+          <div className="flex flex-wrap gap-3 mt-4">
             {user?.profile?.skills?.length > 0 ? (
               user.profile.skills.map((skill, idx) => (
                 <Badge
                   key={idx}
-                  className="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full font-medium"
+                  className="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full font-semibold shadow"
                 >
                   {skill}
                 </Badge>
@@ -108,29 +118,32 @@ const Profile = () => {
         </div>
 
         {/* Resume */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold text-indigo-700 border-b border-indigo-200 pb-1">
+        <div className="mt-10">
+          <h2 className="text-xl font-bold text-indigo-700 border-b border-indigo-200 pb-2">
             Resume
           </h2>
-          <div className="mt-3">
+          <div className="mt-4">
             {user?.profile?.resume ? (
               <a
                 href={user.profile.resume}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-600 underline hover:text-indigo-800"
+                className="text-indigo-600 font-medium underline hover:text-indigo-800"
               >
                 Download {user?.profile?.resumeOriginalName || "Resume"}
               </a>
             ) : (
-              <p className="text-gray-400 italic">No resume found</p>
+              <p className="text-gray-400 italic">No resume uploaded</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Applied Jobs */}
-      <div className="max-w-4xl mx-auto mt-6 p-6 bg-white border border-gray-200 rounded-3xl shadow-md">
+      <div
+        id="applied-jobs-section"
+        className="max-w-5xl mx-auto mb-16 mt-6 p-8 bg-white border border-gray-200 rounded-3xl shadow-lg"
+      >
         <h2 className="text-2xl font-bold text-indigo-800 mb-4">Applied Jobs</h2>
         <AppliedJob />
       </div>

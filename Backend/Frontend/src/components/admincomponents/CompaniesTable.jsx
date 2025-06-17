@@ -19,65 +19,81 @@ const CompaniesTable = () => {
     (store) => store.company
   );
   const navigate = useNavigate();
-  const [filterCompany, setFilterCompany] = useState(companies);
+  const [filterCompany, setFilterCompany] = useState([]);
 
   useEffect(() => {
     const filteredCompany =
-      companies.length >= 0 &&
-      companies.filter((company) => {
-        if (!searchCompanyByText) {
-          return true;
-        }
-        return company.name
-          ?.toLowerCase()
-          .includes(searchCompanyByText.toLowerCase());
-      });
+      companies?.length > 0
+        ? companies.filter((company) =>
+            searchCompanyByText
+              ? company.name
+                  ?.toLowerCase()
+                  .includes(searchCompanyByText.toLowerCase())
+              : true
+          )
+        : [];
     setFilterCompany(filteredCompany);
   }, [companies, searchCompanyByText]);
 
-  console.log("COMPANIES", companies);
-  if (!companies) {
-    return <div>Loading...</div>;
+  if (!companies || companies.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        No companies found.
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="overflow-x-auto">
       <Table>
-        <TableCaption>Your recent registered Companies</TableCaption>
+        <TableCaption className="text-gray-500">
+          Your recently registered companies
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Logo</TableHead>
             <TableHead>Company Name</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>Created On</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {filterCompany.length === 0 ? (
-            <span>No Companies Added</span>
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-6 text-gray-500">
+                No matching companies.
+              </TableCell>
+            </TableRow>
           ) : (
-            filterCompany?.map((company) => (
-              <TableRow key={company.id}>
+            filterCompany.map((company) => (
+              <TableRow key={company._id}>
                 <TableCell>
-                  <Avatar>
+                  <Avatar className="w-10 h-10">
                     <AvatarImage
-                      src={company.logo || "default-logo-url"}
+                      src={
+                        company.logo ||
+                        "https://via.placeholder.com/40x40?text=Logo"
+                      }
                       alt={`${company.name} logo`}
                     />
                   </Avatar>
                 </TableCell>
-                <TableCell>{company.name}</TableCell>
-                <TableCell>{company.createdAt.split("T")[0]}</TableCell>
-                <TableCell className="text-right cursor-pointer">
+                <TableCell className="font-medium">{company.name}</TableCell>
+                <TableCell>
+                  {new Date(company.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-right">
                   <Popover>
-                    <PopoverTrigger>
+                    <PopoverTrigger className="hover:text-primary">
                       <MoreHorizontal />
                     </PopoverTrigger>
                     <PopoverContent className="w-32">
                       <div
-                        onClick={() => navigate(`/admin/companies/${company._id}`)}
-                        className="flex items-center gap-2 w-fit cursor-pointer"
+                        onClick={() =>
+                          navigate(`/admin/companies/${company._id}`)
+                        }
+                        className="flex items-center gap-2 cursor-pointer hover:text-primary transition"
                       >
                         <Edit2 className="w-4" />
                         <span>Edit</span>

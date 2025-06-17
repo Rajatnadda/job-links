@@ -12,51 +12,63 @@ import { setSingleCompany } from "@/redux/CompanySlice";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
-  const [companyName, setCompanyName] = useState();
   const dispatch = useDispatch();
+  const [companyName, setCompanyName] = useState("");
+
   const registerNewCompany = async () => {
+    if (!companyName.trim()) {
+      toast.error("Please enter a company name.");
+      return;
+    }
+
     try {
       const res = await axios.post(
         `${COMPANY_API_ENDPOINT}/register`,
         { companyName },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
+
       if (res?.data?.success) {
         dispatch(setSingleCompany(res.data.company));
         toast.success(res.data.message);
-        const companyId = res?.data?.company?._id;
-        navigate(`/admin/companies/${companyId}`);
+        navigate(`/admin/companies/${res.data.company._id}`);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong while creating the company.");
+      console.error(error);
     }
   };
+
   return (
     <div>
       <Navbar />
-      <div className="max-w-4xl mx-auto">
-        <div className="my-10">
-          <h1 className="font-bold text-2xl ">Company Name</h1>
-          <p className="text-gray-600">Company Description</p>
+      <div className="max-w-4xl mx-auto px-4 py-10">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-1">Register a New Company</h1>
+          <p className="text-gray-600">Provide a name to begin the registration process.</p>
         </div>
-        <Label>Company Name</Label>
-        <Input
-          type="text"
-          placeholder="Company Name"
-          className="my-2"
-          onChange={(e) => setCompanyName(e.target.value)}
-        />
 
-        <div className="flex items-center gap-2 my-10">
-          <Button
-            variant="outline"
-            onClick={() => navigate("/admin/companies")}
-          >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="companyName" className="text-sm">
+              Company Name
+            </Label>
+            <Input
+              id="companyName"
+              type="text"
+              placeholder="e.g. TechVision Pvt Ltd"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 mt-8">
+          <Button variant="outline" onClick={() => navigate("/admin/companies")}>
             Cancel
           </Button>
           <Button onClick={registerNewCompany}>Continue</Button>

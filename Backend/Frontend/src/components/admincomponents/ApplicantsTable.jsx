@@ -21,29 +21,37 @@ const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
 
   const statusHandler = async (status, id) => {
-    console.log("called");
     try {
       axios.defaults.withCredentials = true;
       const res = await axios.post(
         `${APPLICATION_API_ENDPOINT}/status/${id}/update`,
         { status }
       );
-      console.log(res);
       if (res.data.success) {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
+  const applications = applicants?.applications || [];
+
+  if (applications.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        No applicants found.
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="overflow-x-auto">
       <Table>
-        <TableCaption>A list of your recent applied user</TableCaption>
+        <TableCaption>List of users who applied for this job</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>FullName</TableHead>
+            <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Contact</TableHead>
             <TableHead>Resume</TableHead>
@@ -51,56 +59,56 @@ const ApplicantsTable = () => {
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          {applicants &&
-            applicants?.applications?.map((item) => (
-              <tr key={item._id}>
-                <TableCell>{item?.applicant?.fullname}</TableCell>
-                <TableCell>{item?.applicant?.email}</TableCell>
-                <TableCell>{item?.applicant?.phoneNumber}</TableCell>
-                <TableCell>
-                  {item.applicant?.profile?.resume ? (
-                    <a
-                      className="text-blue-600 cursor-pointer"
-                      href={item?.applicant?.profile?.resume}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Download
-                      {/* {item?.applicant?.profile?.resume} */}
-                    </a>
-                  ) : (
-                    <span>NA</span>
-                  )}
-                </TableCell>
-                <TableCell>{item?.applicant?.createdAt.split("T")[0]}</TableCell>
-                <TableCell className="float-right cursor-pointer">
-                  <Popover>
-                    <PopoverTrigger>
-                      <MoreHorizontal />
-                    </PopoverTrigger>
-                    <PopoverContent className="w-32">
-                       {shortlistingStatus.map((status, index) => {
-                          return (
-                            <div
-                              onClick={() => statusHandler(status, item?._id)}
-                              key={index}
-                              className="flex w-fit items-center my-2 cursor-pointer"
-                            >
-                              <input
-                                type="radio"
-                                name="shortlistingStatus"
-                                value={status}
-                              />{" "}
-                              {status}
-                            </div>
-                          );
-                        })}
-                      </PopoverContent>
-                  </Popover>
-                </TableCell>
-              </tr>
-            ))}
+          {applications.map((item) => (
+            <TableRow key={item._id}>
+              <TableCell>{item?.applicant?.fullname || "NA"}</TableCell>
+              <TableCell>{item?.applicant?.email || "NA"}</TableCell>
+              <TableCell>{item?.applicant?.phoneNumber || "NA"}</TableCell>
+              <TableCell>
+                {item?.applicant?.profile?.resume ? (
+                  <a
+                    className="text-blue-600 underline hover:text-blue-800 transition"
+                    href={item.applicant.profile.resume}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download
+                  </a>
+                ) : (
+                  <span className="text-gray-500">NA</span>
+                )}
+              </TableCell>
+              <TableCell>
+                {item?.applicant?.createdAt?.split("T")[0] || "NA"}
+              </TableCell>
+              <TableCell className="text-right">
+                <Popover>
+                  <PopoverTrigger className="text-gray-600 hover:text-gray-800">
+                    <MoreHorizontal className="w-5 h-5" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-32">
+                    {shortlistingStatus.map((status, index) => (
+                      <div
+                        key={index}
+                        onClick={() => statusHandler(status, item._id)}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+                      >
+                        <input
+                          type="radio"
+                          name={`status-${item._id}`}
+                          value={status}
+                          className="cursor-pointer"
+                        />
+                        <label className="cursor-pointer text-sm">{status}</label>
+                      </div>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
