@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setSingleCompany } from "@/redux/CompanySlice";
+import Footer from "../components_lite/Footer";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
@@ -73,6 +74,9 @@ const CompanyCreate = () => {
           </Button>
           <Button onClick={registerNewCompany}>Continue</Button>
         </div>
+      </div>
+      <div>
+        <Footer />
       </div>
     </div>
   );

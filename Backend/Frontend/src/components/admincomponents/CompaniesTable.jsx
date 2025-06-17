@@ -106,6 +106,10 @@ const CompaniesTable = () => {
           )}
         </TableBody>
       </Table>
+     <div>
+
+      <Footer/>
+     </div>
     </div>
   );
 };

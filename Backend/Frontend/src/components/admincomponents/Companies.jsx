@@ -44,7 +44,10 @@ const Companies = () => {
           <CompaniesTable />
         </div>
       </div>
+      <div>
+
       <Footer/>
+      </div>
     </div>
   );
 };

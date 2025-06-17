@@ -209,7 +209,10 @@ const PostJob = () => {
           </div>
         </form>
       </div>
+      <div>
+
       <Footer />
+      </div>
     </div>
   );
 };
