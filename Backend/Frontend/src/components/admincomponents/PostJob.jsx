@@ -17,6 +17,7 @@ import { JOB_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import Footer from "../components_lite/Footer";
 
 const PostJob = () => {
   const [input, setInput] = useState({
@@ -208,6 +209,7 @@ const PostJob = () => {
           </div>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

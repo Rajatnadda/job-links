@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSearchCompanyByText } from "@/redux/CompanySlice";
 import useGetAllCompanies from "@/hooks/usegetAllCompanies";
+import Footer from "../components_lite/Footer";
 
 const Companies = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const Companies = () => {
           <CompaniesTable />
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };
