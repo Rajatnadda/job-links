@@ -1,3 +1,4 @@
+// redux/applicationSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -10,9 +11,8 @@ const applicationSlice = createSlice({
   name: "application",
   initialState,
   reducers: {
-    // Sets all applicants for a specific job
     setAllApplicants: (state, action) => {
-      state.applicants.applications = action.payload.applications;
+      state.applicants = action.payload || { applications: [] };
     },
   },
 });

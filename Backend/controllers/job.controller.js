@@ -55,30 +55,28 @@ export const postJob = async (req, res) => {
 };
 
 //Users
+// controllers/job.controller.js
+
+
 export const getAllJobs = async (req, res) => {
   try {
-    const keyword = req.query.keyword || "";
-    const query = {
-      $or: [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-      ],
-    };
-    const jobs = await Job.find(query)
-      .populate({
-        path: "company",
-      })
-      .sort({ createdAt: -1 });
+    const jobs = await Job.find()
+      .sort({ createdAt: -1 })
+      .populate("company");
 
-    if (!jobs) {
-      return res.status(404).json({ message: "No jobs found", status: false });
-    }
-    return res.status(200).json({ jobs, status: true });
+    return res.status(200).json({
+      success: true,
+      jobs,
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    console.error("Error fetching jobs:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch jobs",
+    });
   }
 };
+
 
 //Users
 export const getJobById = async (req, res) => {

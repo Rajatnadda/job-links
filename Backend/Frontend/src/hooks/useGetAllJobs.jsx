@@ -1,44 +1,32 @@
-import { setAllJobs } from "@/redux/jobSlice";
-import { JOB_API_ENDPOINT } from "@/utils/data";
+// src/hooks/useGetAllJobs.js
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { setAllJobs } from "@/redux/jobSlice"; // make sure this exists
+import { JOB_API_ENDPOINT } from "@/utils/data"; // update if your endpoint is different
 
 const useGetAllJobs = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { searchedQuery, jobs } = useSelector((store) => store.job); // ⬅️ Include jobs here
 
   useEffect(() => {
-    const fetchAllJobs = async () => {
-      setLoading(true);
-      setError(null);
+    const fetchJobs = async () => {
       try {
-        const res = await axios.get(
-          `${JOB_API_ENDPOINT}/get?keyword=${searchedQuery}`,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("API Response:", res.data);
-        if (res.data.status) {
+        const res = await axios.get(`${JOB_API_ENDPOINT}/all`, {
+          withCredentials: true,
+        });
+
+        if (res.data?.success && Array.isArray(res.data.jobs)) {
           dispatch(setAllJobs(res.data.jobs));
         } else {
-          setError("Failed to fetch jobs.");
+          console.warn("No jobs returned or malformed data:", res.data);
         }
       } catch (error) {
-        console.error("Fetch Error:", error);
-        setError(error.message || "An error occurred.");
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch jobs:", error.message || error);
       }
     };
 
-    fetchAllJobs();
-  }, [dispatch, searchedQuery]); // also include searchedQuery in deps
-
-  return { loading, error, jobs }; // ✅ Return jobs
+    fetchJobs();
+  }, [dispatch]);
 };
 
 export default useGetAllJobs;

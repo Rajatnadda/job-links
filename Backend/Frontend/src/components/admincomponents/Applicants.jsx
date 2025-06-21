@@ -12,22 +12,25 @@ const Applicants = () => {
   const dispatch = useDispatch();
   const { applicants } = useSelector((store) => store.application);
 
-  useEffect(() => {
-    const fetchAllApplicants = async () => {
-      try {
-        const res = await axios.get(
-          `${APPLICATION_API_ENDPOINT}/${id}/applicants`,
-          { withCredentials: true }
-        );
+ useEffect(() => {
+  const fetchAllApplicants = async () => {
+    try {
+      const res = await axios.get(
+        `${APPLICATION_API_ENDPOINT}/${id}/applicants`,
+        { withCredentials: true }
+      );
+      if (res.data.success && res.data.job) {
         dispatch(setAllApplicants(res.data.job));
-        console.log("Fetched applicants:", res.data);
-      } catch (error) {
-        console.error("Error fetching applicants:", error);
+      } else {
+        console.warn("No applicants returned", res.data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+    }
+  };
 
-    fetchAllApplicants();
-  }, [id, dispatch]);
+  fetchAllApplicants();
+}, [id, dispatch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-50">
