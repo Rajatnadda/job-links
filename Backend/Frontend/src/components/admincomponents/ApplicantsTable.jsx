@@ -19,6 +19,7 @@ const shortlistingStatus = ["Accepted", "Rejected"];
 
 const ApplicantsTable = () => {
   const { applicants } = useSelector((store) => store.application);
+  const applications = applicants?.applications || [];
 
   const statusHandler = async (status, id) => {
     try {
@@ -35,12 +36,10 @@ const ApplicantsTable = () => {
     }
   };
 
-  const applications = applicants?.applications || [];
-
   if (applications.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        No applicants found.
+      <div className="text-center py-10 text-gray-500 text-lg font-medium">
+        No applicants found for this job.
       </div>
     );
   }
@@ -48,52 +47,54 @@ const ApplicantsTable = () => {
   return (
     <div className="overflow-x-auto">
       <Table>
-        <TableCaption>List of users who applied for this job</TableCaption>
+        <TableCaption className="text-base font-semibold text-gray-600 mb-2">
+          Users who applied for this job
+        </TableCaption>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-indigo-100">
             <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Contact</TableHead>
             <TableHead>Resume</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>Applied On</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {applications.map((item) => (
-            <TableRow key={item._id}>
-              <TableCell>{item?.applicant?.fullname || "NA"}</TableCell>
-              <TableCell>{item?.applicant?.email || "NA"}</TableCell>
-              <TableCell>{item?.applicant?.phoneNumber || "NA"}</TableCell>
+            <TableRow key={item._id} className="hover:bg-indigo-50">
+              <TableCell>{item?.applicant?.fullname || "N/A"}</TableCell>
+              <TableCell>{item?.applicant?.email || "N/A"}</TableCell>
+              <TableCell>{item?.applicant?.phoneNumber || "N/A"}</TableCell>
               <TableCell>
                 {item?.applicant?.profile?.resume ? (
                   <a
-                    className="text-blue-600 underline hover:text-blue-800 transition"
+                    className="text-indigo-600 underline hover:text-indigo-800"
                     href={item.applicant.profile.resume}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Download
+                    View
                   </a>
                 ) : (
-                  <span className="text-gray-500">NA</span>
+                  <span className="text-gray-500">N/A</span>
                 )}
               </TableCell>
               <TableCell>
-                {item?.applicant?.createdAt?.split("T")[0] || "NA"}
+                {item?.createdAt?.split("T")[0] || "N/A"}
               </TableCell>
               <TableCell className="text-right">
                 <Popover>
                   <PopoverTrigger className="text-gray-600 hover:text-gray-800">
                     <MoreHorizontal className="w-5 h-5" />
                   </PopoverTrigger>
-                  <PopoverContent className="w-32">
+                  <PopoverContent className="w-36">
                     {shortlistingStatus.map((status, index) => (
                       <div
                         key={index}
                         onClick={() => statusHandler(status, item._id)}
-                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-1 rounded"
                       >
                         <input
                           type="radio"
