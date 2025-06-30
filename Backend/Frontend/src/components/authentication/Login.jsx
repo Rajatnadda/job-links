@@ -19,7 +19,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, user } = useSelector((store) => store.auth);
+const { loading = false, user = null } = useSelector((store) => store.auth || {});
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });

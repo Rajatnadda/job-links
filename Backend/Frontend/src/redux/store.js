@@ -1,11 +1,11 @@
+// ✅ store.js (after cleanup)
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
-import jobSlice from "./jobSlice";
 import jobReducer from "./jobSlice";
-import companyReducer, { companySlice } from "./CompanySlice";
+import companyReducer from "./CompanySlice";
+import applicationReducer from "./applicationSlice";
 
 import {
-  
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -15,7 +15,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import applicationReducer from "./applicationSlice";
+
 const persistConfig = {
   key: "root",
   version: 1,
@@ -24,11 +24,9 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  job: jobSlice,
   jobs: jobReducer,
-  company: companySlice,
   company: companyReducer,
-  application: applicationReducer ,
+  application: applicationReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -11,9 +11,14 @@ import Footer from "./Footer";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 
 const Home = () => {
-  const { loading, error } = useGetAllJobs();
-  const jobs = useSelector((state) => state.jobs.allJobs);
-  const { user } = useSelector((store) => store.auth);
+  // ✅ Safely handle hook return
+  const result = useGetAllJobs() || {};
+  const { loading = false, error = null } = result;
+
+  // ✅ Safely handle Redux state
+  const jobs = useSelector((state) => state.jobs?.allJobs || []);
+  const { user = null } = useSelector((store) => store.auth || {});
+
   const navigate = useNavigate();
 
   useEffect(() => {
